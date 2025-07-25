@@ -1,0 +1,63 @@
+﻿@model Service.Data.ShoppingCartProductDetailData;
+
+@{
+    var isFirst = true;
+}
+
+<div class="row m-0">
+    <div class="col-md-4 text-center text-md-rigth pt-2">
+        <div id="carouselExampleControls" class="carousel slide">
+            <div class="carousel-inner">
+                @foreach (var imagePath in Model.Images)
+                {
+                    <div class="carousel-item @(isFirst ? "active" : string.Empty)">
+                        <img src="@imagePath" style="max-height: 150px;width: auto">
+                    </div>
+                    isFirst = false;
+                }
+                @if (!Model.Images.Any())
+                {
+                    <div class="carousel-item active">
+                        <img src="~/images/productWithoutImage.jpg" style="max-height: 150px;width: auto">
+                    </div>
+                }
+            </div>
+            <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            </a>
+            <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            </a>
+        </div>
+    </div>
+    <div class="col-md-8 pt-2">
+        <div class="p-3 border rounded shadow-sm" style="height: 100%; max-height: 150px; overflow: auto; background: #fffaf2">
+            <div class="row">
+                <div class="col-md-6 mb-1">
+                    <strong>Disponibilidad:</strong>
+                    <span style="font-size: 15px; white-space: normal" class="@Model.AvailabilityStateClass">
+                        @Model.AvailabilityStateDescription
+                    </span>
+                </div>
+                <div class="col-md-6 mb-1">
+                    <strong>Cant min/lote:</strong> @Model.MinimumSalesQuantity?.Trim()
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 mb-1">
+                    <strong>Categoría:</strong> @Model.Category?.Trim()
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 mb-1">
+                    <strong>Grupo:</strong> @Model.Group?.Trim()
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 mb-1">
+                    <strong>Descripción:</strong> @Model.Description?.Trim()
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

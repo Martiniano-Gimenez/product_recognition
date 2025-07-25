@@ -1,0 +1,45 @@
+﻿@using Service.Data;
+@model GridData<SalesFileGridData>
+@{
+    int offset = ViewBag.Offset; 
+}
+
+@foreach (var file in Model.List)
+{
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-2">
+        <div class="card border-warning shadow">
+            <div class="card-header bg-warning text-dark text-center rounded-top">
+                <h5 class="mb-0 text-truncate" style="font-size: 0.9rem; font-weight: bold" title="@file.Name">
+                    @file.Name
+                </h5>
+            </div>
+            <div class="card-body text-center p-2">
+                <div class="pdf-container border rounded shadow-sm mx-auto" style="max-width: 200px;" data-filename="@file.Id">
+                    <canvas id="pdf-render-@file.Id" class="w-100"></canvas>
+                </div>
+            </div>
+            <div class="card-footer d-flex flex-column gap-2">
+                <button class="btn btn-info btn-sm w-100 mb-1" data-toggle="modal" data-target="#pdfModal" data-filename="@file.Id">
+                    Ver Oferta <i class="fa-solid fa-eye"></i>
+                </button>
+                <button class="btn btn-secondary btn-sm w-100" onclick="downloadPdf('@file.Id')">
+                    Descargar <i class="fa-solid fa-download"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+}
+
+@if (!Model.List.Any())
+{
+    <div class="col-12">
+        <h5>No hay ofertas disponibles</h5>
+    </div>
+}
+
+@if (Model.Count - offset > 0)
+{
+    <div class="col-md-12 mb-2" id="loadPreviousBtn">
+        <button type="button" onclick="loadPrevious(@offset)" class="btn btn-warning w-100">Ver más <i class="fa-solid fa-circle-plus"></i></button>
+    </div>
+}

@@ -1,0 +1,25 @@
+﻿@if (TempData["errorMessage"] != null)
+{
+    <div class="alert alert-danger text-center" id="Messages" onclick="ClosedSuccess()">
+        <strong>@TempData["errorMessage"]</strong>
+       
+    </div>
+}
+@if (TempData["successMessage"] != null)
+{
+    <div class="alert alert-success text-center" id="Messages" onclick="ClosedSuccess()">
+        <strong>@TempData["successMessage"]</strong>
+    </div>
+}
+@if (TempData["alertMessage"] != null)
+{
+    <div class="alert alert-warning text-center" id="Messages" onclick="ClosedSuccess()">
+        <strong>@TempData["alertMessage"]</strong>
+    </div>
+}
+
+@(TempData["errorMessage"] = null)
+@(TempData["successMessage"] = null)
+@(TempData["alertMessage"] = null)
+
+

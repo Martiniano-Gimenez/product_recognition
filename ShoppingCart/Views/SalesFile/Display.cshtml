@@ -1,0 +1,184 @@
+﻿@using Service.Data;
+@model GridData<SalesFileGridData>
+
+@{
+    ViewData["Title"] = "Sales Preview";
+}
+
+<div class="text-center offers-container">
+    <div class="row">
+        <div class="col-md-12">
+            <h4 class="page-title text-center">OFERTAS</h4>
+        </div>
+    </div>
+    <div class="row" id="displayContainer">
+        @await Html.PartialAsync("_display", Model)
+    </div>
+</div>
+
+<div class="modal fade" id="pdfModal" tabindex="-1" aria-labelledby="pdfModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="pdfModalLabel">Vista Completa</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">X</span>
+                </button>
+            </div>
+            <div class="modal-body" style="max-height: 73vh; overflow: auto">
+                <canvas id="pdf-render-modal" style="width: 100%"></canvas>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary btn-sm" onclick="prevPage()">Página Anterior</button>
+                <button class="btn btn-primary btn-sm" onclick="nextPage()">Siguiente Página</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script src="~/content/pdf.js/pdf.js"></script>
+    <script>
+        function loadPrevious(offset) {
+            $.ajax({
+                url: '@Url.Action("LoadPrevious")?offset=' + offset,
+                type: 'POST',
+                success: function (data) {
+                    $('#loadPreviousBtn').remove();
+                    $('#displayContainer').append(data);
+                    $('.pdf-container').each(function () {
+                        observer.observe(this);
+                        $(this).removeClass('pdf-container')
+                    });
+                }
+            });
+        }
+
+        function downloadPdf(id) {
+            const url = '/api/pdf/' + id;
+            const link = document.createElement('a'); 
+            link.href = url;
+            link.download = id;
+            document.body.appendChild(link); 
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        let currentFileName = '';
+        let pageNum = 1;
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const container = entry.target;
+                    const fileName = container.getAttribute('data-filename');
+                    const canvas = container.querySelector('canvas');
+                    loadPdf(fileName, canvas); 
+                    observer.unobserve(container);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        $(document).ready(function () {
+            $('.pdf-container').each(function () {
+                observer.observe(this);
+                $(this).removeClass('pdf-container')
+            });
+
+            $('#pdfModal').on('shown.bs.modal', function (event) {
+                const button = $(event.relatedTarget); 
+                const fileName = button.data('filename'); 
+                currentFileName = fileName; 
+                pageNum = 1; 
+                const canvasModal = $('#pdf-render-modal')[0];
+                loadPdf(fileName, canvasModal);
+                updateNavigationButtons();
+            });
+        });
+
+        const pdfs = {};
+
+        function loadPdf(fileName, canvas) {
+            if (!pdfs[fileName]) {
+                const url = '/api/pdf/' + fileName;
+                pdfjsLib.getDocument(url).promise.then(function (pdfDoc_) {
+                    pdfs[fileName] = pdfDoc_; 
+                    renderPage(fileName, pageNum, canvas); 
+                });
+            } else {
+                renderPage(fileName, pageNum, canvas); 
+            }
+        }
+
+        function renderPage(fileName, pageNum, canvas) {
+            const pdfDoc = pdfs[fileName];
+            const ctx = canvas.getContext('2d');
+
+            pdfDoc.getPage(pageNum).then(page => {
+                const viewport = page.getViewport({ scale: 1.0 });
+                canvas.width = viewport.width;
+                canvas.height = viewport.height;
+
+                const renderContext = {
+                    canvasContext: ctx,
+                    viewport: viewport
+                };
+
+                page.render(renderContext);
+            });
+        }
+
+        function prevPage() {
+            if (pageNum <= 1) return; 
+            pageNum--; 
+            renderPageInModal(pageNum);
+            updateNavigationButtons();
+        }
+
+        function nextPage() {
+            const pdfDoc = pdfs[currentFileName]; 
+            if (pageNum >= pdfDoc.numPages) return; 
+            pageNum++; 
+            renderPageInModal(pageNum);
+            updateNavigationButtons();
+        }
+
+        function renderPageInModal(pageNum) {
+            const canvasModal = $('#pdf-render-modal')[0];
+            const ctxModal = canvasModal.getContext('2d');
+            const pdfDoc = pdfs[currentFileName]; 
+
+            pdfDoc.getPage(pageNum).then(page => {
+                const viewport = page.getViewport({ scale: 1.0 });
+                canvasModal.width = viewport.width;
+                canvasModal.height = viewport.height;
+
+                const renderContext = {
+                    canvasContext: ctxModal,
+                    viewport: viewport
+                };
+
+                page.render(renderContext);
+                updateNavigationButtons();
+            });
+        }
+
+        function updateNavigationButtons() {
+            const pdfDoc = pdfs[currentFileName];
+
+            if (pageNum <= 1) {
+                $('.modal-footer .btn-primary').eq(0).attr('disabled', 'disabled');
+            } else {
+                $('.modal-footer .btn-primary').eq(0).removeAttr('disabled');
+            }
+
+            if (pageNum >= pdfDoc.numPages) {
+                $('.modal-footer .btn-primary').eq(1).attr('disabled', 'disabled');
+            } else {
+                $('.modal-footer .btn-primary').eq(1).removeAttr('disabled');
+            }
+        }
+
+    </script>
+}

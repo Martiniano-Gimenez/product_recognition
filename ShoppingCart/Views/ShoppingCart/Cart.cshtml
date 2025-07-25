@@ -1,0 +1,238 @@
+﻿@using Model.Domain
+@using ShoppingCart.Helpers
+@model Service.Data.CartData
+
+
+@{
+    ViewBag.Title = "Cart";
+    var controllerName = ViewContext.RouteData.Values["controller"].ToString();
+    var isClient = false;
+}
+
+@section Styles
+{
+    <link href="~/content/datatable/datatables.min.css" rel="stylesheet">
+    <link href="~/content/sweet-alert2/css/sweetalert2.min.css" rel="stylesheet">
+    <link href="~/content/select2/css/select2.min.css" rel="stylesheet">
+}
+
+@using (Html.BeginForm("Create", "ShoppingCart", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    <div class="row">
+        <div class="col-md-12">
+            <h4 class="page-title text-center">PEDIDO ACTUAL</h4>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <h6 class="text-center fw-bold mt-3 mb-3 p-2 bg-warning text-dark rounded shadow-sm">
+                LOS PRECIOS UNITARIOS DE CADA ARTÍCULO SON NETOS
+            </h6>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <div id="partialMessages" style="height:40px">
+                @await Html.PartialAsync("_Messages")
+            </div>
+        </div>
+    </div>
+    @if (!isClient)
+    {
+        <div class="row mb-3 mt-2">
+            <div class="col-md-12">
+                @Html.DropDownListFor(model => model.ClientId, new SelectList(ViewBag.Clients, "Key", "Value"), "Seleccione un cliente", new { @class = "form-control" })
+            </div>
+        </div>
+    }
+    <div class="row" id="cartContainer">
+        @await Html.PartialAsync("_cart", Model)
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card cart-summary shadow-sm border-0">
+                <div class="card-body p-2" style="border: 2px solid #221109">
+                    <div class="row align-items-center">
+                        <div class="col-md-9 mb-2 mb-md-0">
+                            @Html.TextAreaFor(model => model.Observation, new { @class = "form-control", @style = "width: 100%; resize: none; height: 42px; font-size: 15px; padding: 4px", @placeholder = "Observación..." })
+                        </div>
+                        <div class="col-md-3">
+                            <a href="@Url.Action("Index")" class="btn btn-secondary btn-sm w-100 p-0 mb-1" style="font-size: 1rem; font-weight: bold;">Continuar comprando</a>
+                            @if (!Model.Products.Any())
+                            {
+                                <button type="button" disabled class="btn btn-warning btn-sm w-100 p-0" style="font-size: 1rem; font-weight: bold;">
+                                    Confirmar
+                                </button>
+                            }
+                            else
+                            {
+                                if (isClient)
+                                {
+                                    <button type="button" onclick="sendOrder()" class="btn btn-warning btn-sm w-100 p-0" style="font-size: 1rem; font-weight: bold;">
+                                        Confirmar
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button type="button" onclick="sendNoClientOrder()" class="btn btn-warning btn-sm w-100 p-0" style="font-size: 1rem; font-weight: bold;">
+                                        Confirmar
+                                    </button>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts
+{
+    <script src="~/content/datatable/datatables.min.js"></script>
+    <script src="~/content/sweet-alert2/js/sweetalert2.all.min.js"></script>
+    <script src="~/content/select2/js/select2.min.js"></script>
+    <script src="~/content/select2/js/i18n/es.js"></script>
+
+
+    <script>
+        $(document).ready(function () {
+            $('#ClientId').select2({
+                placeholder: 'Seleccione un cliente',
+                allowClear: true,
+                language: 'es',
+                width: "100%"
+            });
+        })
+
+        function sendNoClientOrder() {
+            if (!($('#ClientId').val() > 0)) {
+                Swal.fire({
+                    title: '¡Atención!',
+                    text: 'Debe seleccionar un cliente para continuar.',
+                    icon: 'warning',
+                    confirmButtonText: 'Aceptar'
+                });
+                return;
+            }
+
+
+            Swal.fire({
+                title: "¿Está seguro desea enviar este pedido?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: 'Aceptar',
+                cancelButtonText: 'Cancelar',
+                reverseButtons: true,
+                customClass: {
+                    confirmButton: 'btn btn-success',
+                    cancelButton: 'btn btn-danger mr-2'
+                },
+                buttonsStyling: false,
+                allowOutsideClick: false
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    beginWait($('#cartContainer'))
+                    $('form').submit();
+                }
+            });
+        }
+
+        function sendOrder() {
+            Swal.fire({
+                title: "¿Está seguro desea enviar este pedido?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: 'Aceptar',
+                cancelButtonText: 'Cancelar',
+                reverseButtons: true,
+                customClass: {
+                    confirmButton: 'btn btn-success',
+                    cancelButton: 'btn btn-danger mr-2'
+                },
+                buttonsStyling: false,
+                allowOutsideClick: false
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    beginWait($('#cartContainer'))
+                    $('form').submit();
+                }
+            });
+        }
+
+        function changeProductCartQuantity(productId, elem) {
+            var quantity = elem.value;
+            $.ajax({
+                url: '@Url.Action("ChangeProductCartQuantity")?productId=' + productId + '&quantity=' + quantity,
+                type: 'POST',
+                success: function (data) {
+                    var selector = $("#cartContainer");
+                    selector.empty();
+                    selector.html(data);
+                },
+                error: function (jqXHR) {
+                    $(elem).val('');
+
+                    let errorMessage = "Ocurrió un error inesperado";
+                    if (jqXHR.responseJSON && jqXHR.responseJSON.error) {
+                        errorMessage = jqXHR.responseJSON.error;
+                    }
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: errorMessage,
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                }
+            });
+        }
+
+        function deleteProduct(productId) {
+            Swal.fire({
+                title: "¿Está seguro de eliminar este item?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: 'Aceptar',
+                cancelButtonText: 'Cancelar',
+                reverseButtons: true,
+                customClass: {
+                    confirmButton: 'btn btn-success',
+                    cancelButton: 'btn btn-danger mr-2'
+                },
+                buttonsStyling: false,
+                allowOutsideClick: false
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '@Url.Action("DeleteProductFromCart")?productId=' + productId,
+                        type: 'POST',
+                        success: function (data) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Éxito',
+                                text: 'Se ha eliminado correctamente el item',
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
+                            var selector = $("#cartContainer");
+                            selector.empty();
+                            selector.html(data);
+                        },
+                        error: function () {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'No se ha podido eliminar el item',
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
+                        }
+                    });
+                }
+            });
+        }
+    </script>
+}

@@ -1,0 +1,61 @@
+﻿@using Service.Data;
+@model DownloadFileDisplayData
+
+@{
+    ViewData["Title"] = "Dowload Files";
+}
+
+<div class="text-center offers-container">
+    <div class="row">
+        <div class="col-12 col-md-6 my-2">
+            <div class="card border-danger shadow">
+                <div class="card-header bg-danger text-white text-center">
+                    <h3 class="mb-0">ARCHIVOS PDF</h3>
+                </div>
+                <div class="card-body">
+                    <div class="list-group" id="pdfContainer">
+                        @await Html.PartialAsync("_pdfContainer", Model)
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 my-2">
+            <div class="card border-success shadow">
+                <div class="card-header bg-success text-white text-center">
+                    <h3 class="mb-0">ARCHIVOS XLSX</h3>
+                </div>
+                <div class="card-body">
+                    <div class="list-group" id="xlsxContainer">
+                        @await Html.PartialAsync("_xlsxContainer", Model)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script>
+        function downloadFile(id) {
+            const url = '/api/file/' + id;
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = id;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function loadPrevious(offsetPdf, offsetXlsx, btnId, containerId) {
+            $.ajax({
+                url: '@Url.Action("LoadPrevious")?offsetPdf=' + offsetPdf + "&offsetXlsx=" + offsetXlsx,
+                type: 'POST',
+                success: function (data) {
+                    $(btnId).remove();
+                    $(containerId).append(data);
+                }
+            });
+        }
+    </script>
+}

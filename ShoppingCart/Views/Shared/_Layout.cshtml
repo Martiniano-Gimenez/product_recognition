@@ -1,0 +1,163 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Mareq">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <title>mareq</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/manifest.json">
+
+    <link rel="stylesheet" href="~/content/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/nav.styles.css" />
+    <link rel="stylesheet" href="~/lib/fontawesome-6.6.0/css/all.min.css">
+    <link rel="stylesheet" href="~/content/waitMe/css/waitMe.min.css">
+    <style>
+        input[type="number"] {
+            -webkit-appearance: textfield;
+            -moz-appearance: textfield;
+            appearance: textfield;
+        }
+
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+    </style>
+    @RenderSection("Styles", false)
+</head>
+<body>
+    <header>
+        @await Html.PartialAsync("_Menu")
+    </header>
+
+    <div class="layout-container">
+        <main role="main">
+            @RenderBody()
+        </main>
+    </div>
+
+
+    <footer class="p-3 mt-1 footer">
+        <div class="text-center">
+            Sistema desarrollado por <a target="_blank" href="https://www.instagram.com/asenciomateosoftware?igsh=MWZnZ3Q3ajNnZWxkcA%3D%3D&utm_source=qr"> asenciomateosoftware</a>
+        </div>
+    </footer>
+    <script src="~/content/jquery/jquery-3.7.1.min.js"></script>
+    <script src="~/content/popper/popper.min.js"></script>
+    <script src="~/content/bootstrap/js/bootstrap.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/nav.js" asp-append-version="true"></script>
+    <script src="~/content/waitMe/js/waitMe.min.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+
+    <script>
+        //parse decimal numbers
+        $(document).ready(function () {
+            $("input, textarea, select").attr("autocomplete", "off");
+            parseDecimal();
+            parseNumber();
+        });
+        function parseDecimal() {
+            $("input.decimal").keyup(function (event) {
+                if (event.which == 110 || event.which == 190) {
+                    $(this).val($(this).val().replace(".", ","));
+                }
+            });
+            $("input.decimal").keypress(function (event) {
+                if (!(event.charCode >= 48 && event.charCode <= 57)) {
+                    if ((event.charCode == 46) || (event.charCode == 44) || (event.charCode == 45))
+                        return;
+                    else
+                        event.preventDefault();
+                }
+            });
+        }
+
+        function parseNumber() {
+            $("input.number").keypress(function (event) {
+                if (!(event.charCode >= 48 && event.charCode <= 57)) {
+                    event.preventDefault();
+                }
+            });
+        }
+
+        setTimeout(ClosedSuccess, 15000);
+        function ClosedSuccess() {
+            $('#Messages').fadeOut('slow');
+        }
+
+        function beginWait(element) {
+            $(element).waitMe({
+                effect: 'ios',
+                text: 'Cargando...',
+                maxSize: '',
+                waitTime: -1,
+                textPos: 'vertical',
+                fontSize: '',
+                source: '',
+                onClose: function () { }
+            });
+        }
+
+        function endWait(element) {
+            $(element).waitMe("hide");
+        }
+    </script>
+    <script>
+        let deferredPrompt;
+
+        function checkBannerClosed() {
+            return localStorage.getItem('mareq-install-banner-closed') === 'true';
+        }
+
+        function isMobileDevice() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+
+
+        if (checkBannerClosed() || !isMobileDevice()) {
+            $('#install-banner').hide();
+        } else {
+            if (window.matchMedia('(display-mode: standalone)').matches) {
+                $('#install-banner').hide();
+            }
+
+            window.addEventListener('beforeinstallprompt', (event) => {
+                event.preventDefault();
+                deferredPrompt = event;
+                $('#install-banner').show();
+
+                if (!navigator.userAgent.match(/iPhone|iPad|iPod/)) {
+                    $('#install-btn').show();
+                } else {
+                    $('#ios-message').show();
+                }
+
+                $('#install-btn').on('click', () => {
+                    deferredPrompt.prompt();
+                    deferredPrompt.userChoice.then((choiceResult) => {
+                        deferredPrompt = null;
+                        if (choiceResult.outcome === 'accepted') {
+                            $('#install-banner').hide();
+                        }
+                    });
+                });
+
+                $('#close-banner').on('click', function () {
+                    $('#install-banner').hide();
+                    localStorage.setItem('mareq-install-banner-closed', 'true');
+                });
+            });
+        }
+    </script>
+
+</body>
+</html>

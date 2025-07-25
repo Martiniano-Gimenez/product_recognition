@@ -1,0 +1,89 @@
+﻿@using Model.Domain
+@using ShoppingCart.Helpers
+@model Service.Data.CartData
+
+<div class="col-lg-12">
+    <div class="card mb-4">
+        <div class="card-body">
+            @for (int productIndex = 0; productIndex < Model.Products.Count; productIndex++)
+            {
+                <div class="row cart-item mb-3">
+                    @Html.HiddenFor(model => model.Products[productIndex].ProductId)
+                    @Html.HiddenFor(model => model.Products[productIndex].Quantity)
+                    @Html.HiddenFor(model => model.Products[productIndex].Price)
+                    @Html.HiddenFor(model => model.Products[productIndex].Product)
+                    @Html.HiddenFor(model => model.Products[productIndex].IvaPercentage)
+                    @Html.HiddenFor(model => model.Products[productIndex].ProductAvailabilityStateId)
+                    <div class="col-12">
+                        <p class="card-title" style="font-size: larger">@Html.DisplayFor(model => model.Products[productIndex].Product)</p>
+                    </div>
+                    <div class="col-lg-2 col-4">
+                        <div class="input-group">
+                            @Html.EditorFor(model => model.Products[productIndex].Quantity, new
+                                {
+                                    htmlAttributes = new
+                                    {
+                                        @class = "form-control text-center productInput number",
+                                        @step = "1",
+                                        @min = "1",
+                                        @pattern = "[0-9]*",
+                                        onchange = $"changeProductCartQuantity({Model.Products[productIndex].ProductId}, this)"
+                                    }
+                                })
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-8 text-lg-center text-right">
+                        <p class="fw-bold mb-0 mt-2">@Html.DisplayFor(model => model.Products[productIndex].DisplayPrice, new { @style = "font-size: larger" })</p>
+                    </div>
+                    <div class="col-lg-3 col-12 text-lg-center text-right">
+                        <p class="fw-bold mb-0 mt-2">@Html.DisplayFor(model => model.Products[productIndex].DisplayNet, new { @style = "font-size: larger" })</p>
+                    </div>
+                    <div class="col-lg-2 col-6 text-lg-center text-left">
+                        <span style='font-size: 15px' class='mb-0 mt-2 @Model.Products[productIndex].AvailabilityStateClass'>@Model.Products[productIndex].AvailabilityStateDescription</span>
+                    </div>
+                    <div class="col-lg-2 col-6 text-right mt-3 mt-lg-0">
+                        <button type="button" class="btn btn-sm btn-outline-danger" onclick="deleteProduct(@Model.Products[productIndex].ProductId)">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                <hr>
+            }
+            @if (!Model.Products.Any())
+            {
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4 class="m-0 text-center">Su carrito actual esta vacio</h4>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<div class="col-lg-12">
+    <div class="card cart-summary shadow-sm border-0">
+        <div class="card-body p-2" style="border: 2px solid #221109; border-bottom: none; background-color: #221109 !important; color: #FFD700 !important;">
+            <div class="row align-items-center">
+                <div class="col-md-4 text-center" style="font-size: 22px; font-weight: 800">
+                    <strong class="me-3">Neto:</strong>
+                    <span>
+                        @Html.DisplayFor(model => model.NetDisplay)
+                    </span>
+                </div>
+                <div class="col-md-4 text-center" style="font-size: 22px; font-weight: 800">
+                    <strong class="me-3">Iva:</strong>
+                    <span>
+                        @Html.DisplayFor(model => model.IvaDisplay)
+                    </span>
+                </div>
+                <div class="col-md-4 text-center" style="font-size: 22px; font-weight: 800">
+                    <strong class="me-3">Total:</strong>
+                    <span>
+                        @Html.DisplayFor(model => model.TotalDisplay)
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

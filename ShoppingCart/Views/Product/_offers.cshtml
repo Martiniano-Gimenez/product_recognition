@@ -1,0 +1,39 @@
+﻿@model Service.Data.ProductData
+
+<table class="table table-striped table-bordered table-hover" width="100%">
+    <thead>
+        <tr>
+            <th class="text-center">Unidades</th>
+            <th class="text-center">Precio Unitario</th>
+            <th class="text-center">Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.ProductOffers.Any())
+        {
+            for (int i = 0; i < Model.ProductOffers.Count; i++)
+            {
+                <tr>
+                    <td class="text-center">
+                        @Html.HiddenFor(model => model.ProductOffers[i].Id)
+                        @Html.HiddenFor(model => model.ProductOffers[i].Units)
+                        @Html.DisplayFor(model => model.ProductOffers[i].Units)
+                    </td>
+                    <td class="text-center">
+                        @Html.HiddenFor(model => model.ProductOffers[i].UnitPrice)
+                        @Html.DisplayFor(model => model.ProductOffers[i].UnitPrice)
+                    </td>
+                    <td class="text-center">
+                        <button type="button" onclick="deleteOffer(@i)" class="btn btn-danger btn-sm">
+                            Eliminar <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr><td colspan="3">Sin ofertas</td></tr>
+        }
+    </tbody>
+</table>

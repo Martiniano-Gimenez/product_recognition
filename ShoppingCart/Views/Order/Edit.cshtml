@@ -1,0 +1,257 @@
+﻿@using Model.Domain
+@using Service.Data
+@using ShoppingCart.Helpers
+@model Service.Data.OrderData
+
+
+@{
+    ViewBag.Title = "Edit";
+    var controllerName = ViewContext.RouteData.Values["controller"].ToString();
+}
+
+@section Styles
+{
+    <link href="~/content/select2/css/select2.min.css" rel="stylesheet">
+    <link href="~/content/sweet-alert2/css/sweetalert2.min.css" rel="stylesheet">
+    <link href="~/css/tables.css" rel="stylesheet">
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="row">
+        <div class="col-md-12">
+            <h4 class="page-title text-center">PEDIDO @Model.Id</h4>
+            @Html.HiddenFor(model => model.Id)
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-md-4">
+            @Html.LabelFor(model => model.Client)
+            @Html.EditorFor(Model => Model.Client, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+        </div>
+        <div class="form-group col-md-4">
+            @Html.LabelFor(model => model.Seller)
+            @Html.EditorFor(Model => Model.Seller, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+        </div>
+        <div class="form-group col-md-4">
+            @Html.LabelFor(model => model.Date)
+            @Html.EditorFor(Model => Model.Date, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-md-9">
+            @Html.LabelFor(model => model.NewProductId)
+            @Html.DropDownListFor(model => model.NewProductId, new SelectList(new List<KeyValueData>(), "Key", "Value"), "Seleccione un artículo", new { @class = "form-control" })
+        </div>
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.NewProductQuantity)
+            @Html.EditorFor(model => model.NewProductQuantity, new
+                {
+                    htmlAttributes = new
+                    {
+                        @class = "form-control text-center productInput number",
+                        @step = "1",
+                        @min = "1",
+                        @pattern = "[0-9]*",
+                    }
+                })
+        </div>
+        <div class="form-group col-md-1 align-content-end">
+            <button type="button" onclick="addProduct()" class="btn btn-primary btn-sm w-100" title="Agregar artículo" style="font-size: 1rem; font-weight: bold; height: 38px;">
+                <i class="fa-solid fa-plus"></i>
+            </button>
+        </div>
+    </div>
+    <div class="row" id="productsContainer">
+        @await Html.PartialAsync("_edit", Model)
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card cart-summary shadow-sm border-0">
+                <div class="card-body p-2" style="border: 2px solid #221109">
+                    <div class="row align-items-center">
+                        <div class="col-md-9 mb-2 mb-md-0">
+                            @Html.TextAreaFor(model => model.Observation, new { @class = "form-control", @style = "width: 100%; resize: none; height: 42px; font-size: 15px; padding: 4px", @placeholder = "Observación..." })
+                        </div>
+                        <div class="col-md-3">
+                            <a href="@Url.Action("Index")" class="btn btn-secondary btn-sm w-100 p-0 mb-1" style="font-size: 1rem; font-weight: bold;">Volver</a>
+                            <button type="button" onclick="edit()" class="btn btn-warning btn-sm w-100 p-0" style="font-size: 1rem; font-weight: bold;">
+                                Guardar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts
+{
+    <script src="~/content/select2/js/select2.min.js"></script>
+    <script src="~/content/select2/js/i18n/es.js"></script>
+    <script src="~/content/sweet-alert2/js/sweetalert2.all.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+             $('#NewProductId').select2({
+                allowClear: true,
+                language: 'es',
+                width: "100%",
+                placeholder: "Seleccione un artículo",
+                multiple: false,
+                minimumInputLength: 2,
+                delay: 50, 
+                ajax: {
+                    url: "@Url.Action("GetProductsByTerm")", 
+                    dataType: 'json',
+                    type: "GET",
+                    data: function(params) {
+                        return {
+                            term: params.term
+                        };
+                    },
+                    processResults: function(data) {
+                        return {
+                            results: $.map(data, function(item) {
+                                return {
+                                    id: item.Key,  
+                                    text: item.Value 
+                                };
+                            })
+                        };
+                    }
+                }
+            });
+        })
+
+        function addProduct() {
+            if (!($('#NewProductId').val() > 0) || !($('#NewProductQuantity').val() > 0)) {
+                Swal.fire({
+                    title: '¡Atención!',
+                    text: 'Debe seleccionar artículo y cantidad para agregar.',
+                    icon: 'warning',
+                    confirmButtonText: 'Aceptar'
+                });
+                return;
+            }
+
+            var data = $('form').serialize();
+            $.ajax({
+                url: '@Url.Action("AddProductToOrder")',
+                type: 'POST',
+                data: data,
+                success: function (data) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Éxito',
+                        text: 'Se ha agregado correctamente el item',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                    var selector = $("#productsContainer");
+                    selector.empty();
+                    selector.html(data);
+                    $('#NewProductId').val('').trigger('change');
+                    $('#NewProductQuantity').val('');
+
+                },
+                error: function () {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'No se ha podido agregar el item',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                }
+            });
+        }
+
+        function updateOrder() {
+            var data = $('form').serialize();
+            $.ajax({
+                url: '@Url.Action("UpdateOrder")',
+                type: 'POST',
+                data: data,
+                success: function (data) {
+                    var selector = $("#productsContainer");
+                    selector.empty();
+                    selector.html(data);
+                },
+                error: function () {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'No se ha podido actualizar el pedido',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                }
+            });
+        }
+
+        function deleteProduct(productId) {
+            Swal.fire({
+                title: "¿Está seguro de eliminar este item?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: 'Aceptar',
+                cancelButtonText: 'Cancelar',
+                reverseButtons: true,
+                customClass: {
+                    confirmButton: 'btn btn-success', 
+                    cancelButton: 'btn btn-danger mr-2'    
+                },
+                buttonsStyling: false,
+                allowOutsideClick: false
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var data = $('form').serialize();
+                    $.ajax({
+                        url: '@Url.Action("DeleteProduct")?productId=' + productId,
+                        type: 'POST',
+                        data: data,
+                        success: function (data) {
+                            var selector = $("#productsContainer");
+                            selector.empty();
+                            selector.html(data);
+                        },
+                        error: function () {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'No se ha podido eliminar el item',
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
+                        }
+                    });
+                }
+            });
+        }
+
+        function edit() {
+            Swal.fire({
+                title: "¿Está seguro desea actualizar el pedido?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: 'Aceptar',
+                cancelButtonText: 'Cancelar',
+                reverseButtons: true,
+                customClass: {
+                    confirmButton: 'btn btn-success',
+                    cancelButton: 'btn btn-danger mr-2'
+                },
+                buttonsStyling: false,
+                allowOutsideClick: false
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    beginWait($('form'))
+                    $('form').submit();
+                }
+            });
+        }
+    </script>
+}

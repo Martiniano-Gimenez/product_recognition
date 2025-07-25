@@ -1,0 +1,43 @@
+﻿/* Estilos personalizados */
+.btn-agregar {
+    background: linear-gradient(135deg, #ffcc00, #ff9900); /* Degradado amarillo-naranja */
+    border: none;
+    color: white;
+    border-radius: 50px; /* Bordes redondeados */
+    padding: 4px 6px; /* Ajustar el padding para hacerlo más compacto */
+    font-size: 14px; /* Tamaño de fuente */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Sombra */
+    transition: all 0.3s ease-in-out;
+    white-space: nowrap; /* Mantener el texto en una sola línea */
+}
+
+    .btn-agregar:hover {
+        background: linear-gradient(135deg, #ffb300, #ff7800); /* Cambio de color al pasar el mouse */
+        box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3); /* Sombra más fuerte en hover */
+        transform: translateY(-2px); /* Efecto de elevación */
+    }
+
+    .btn-agregar .icon-agregar {
+        font-size: 16px; /* Tamaño del ícono más pequeño */
+    }
+
+    /* Estilo del tooltip */
+    .btn-agregar[title]:hover::after {
+        content: attr(title);
+        position: absolute;
+        bottom: 120%;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #333;
+        color: #fff;
+        padding: 4px 8px; /* Ajustar el padding del tooltip */
+        border-radius: 6px;
+        white-space: nowrap;
+        font-size: 12px; /* Tamaño de fuente del tooltip más pequeño */
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+
+    .btn-agregar[title]:hover::after {
+        opacity: 1;
+    }
