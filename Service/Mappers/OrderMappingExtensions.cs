@@ -48,8 +48,7 @@ namespace Service.Mappers
             return entity => new OrderData
             {
                 Id = entity.Id,
-                Client = entity.Client.Name,
-                Seller = entity.SellerDisplay,
+                ClientId = entity.ClientId,
                 Date = entity.Date.ToString("dd/MM/yyyy HH:mm"),
                 Observation = entity.Observation,
                 Products = entity.OrderDetails.AsQueryable().Where(od => od.IsActive)

@@ -35,8 +35,8 @@ namespace ShoppingCart.Controllers
 
         public async Task<IActionResult> Index()
         {
-            ViewBag.Categories = await _categoryService.GetAllSelectable();
-            ViewBag.Groups = await _groupService.GetAllSelectable();
+            //ViewBag.Categories = await _categoryService.GetAllSelectable();
+            //ViewBag.Groups = await _groupService.GetAllSelectable();
             return View();
         }
 

@@ -8,10 +8,7 @@ namespace Service.Data
         public long Id { get; set; }
 
         [Display(Name = "Cliente")]
-        public string Client { get; set; }
-
-        [Display(Name = "Vendedor")]
-        public string Seller { get; set; }
+        public long? ClientId { get; set; }
 
         [Display(Name = "Fecha")]
         public string Date { get; set; }

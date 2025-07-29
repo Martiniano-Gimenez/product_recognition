@@ -26,6 +26,7 @@ namespace Service.Mappers
                     Quantity = cd.Quantity,
                     Product = cd.Product.Name,
                     IvaPercentage = cd.Product.IvaPercentage,
+                    ProductAvailabilityStateId = eProductAvailabilityState.Available
                 }).ToList()
             };
         }

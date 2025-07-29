@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Model.Domain;
 using Service;
 using Service.Data;
 using Service.Implementations;
@@ -12,12 +13,15 @@ namespace ShoppingCart.Controllers
     {
         private readonly IOrderService _orderService;
         private readonly IProductService _productService;
+        private readonly IClientService _clientService;
 
         public OrderController(IOrderService orderService, 
-                               IProductService productService)
+                               IProductService productService,
+                               IClientService clientService)
         {
             _orderService = orderService;
             _productService = productService;
+            _clientService = clientService;
         }
 
         public IActionResult Index()
@@ -36,6 +40,7 @@ namespace ShoppingCart.Controllers
         {
             try
             {
+                ViewBag.Clients = await _clientService.GetAllSelectable();
                 return View(await _orderService.GetById(id));
             }
             catch (BusinessException ex)

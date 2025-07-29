@@ -15,13 +15,10 @@ namespace ShoppingCart.Controllers
     public class AccountController : BaseController
     {
         private readonly IUserService _userService;
-        private readonly IRecaptchaService _recaptchaService;
 
-        public AccountController(IUserService userService, 
-                                 IRecaptchaService recaptchaService)
+        public AccountController(IUserService userService)
         {
             _userService = userService;
-            _recaptchaService = recaptchaService;
         }
 
         public async Task<IActionResult> Login()
@@ -29,18 +26,12 @@ namespace ShoppingCart.Controllers
             if (User.Identity.IsAuthenticated)
                 return RedirectToAction("Index", "Home");
 
-            ViewData["SiteKey"] = _recaptchaService.GetSiteKey();
             return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> Login(LoginData data)
         {
-            var recaptchaResponse = Request.Form["g-recaptcha-response"];
-            if (string.IsNullOrWhiteSpace(recaptchaResponse) || !await _recaptchaService.ValidateRecaptchaAsync(recaptchaResponse))
-                ModelState.AddModelError("RECAPTCHA", "Error de reCAPTCHA. Intenta de nuevo.");
-
-
             if (ModelState.IsValid)
             {
                 var loggedUser = await _userService.Login(data);
@@ -61,7 +52,6 @@ namespace ShoppingCart.Controllers
                     ShowErrorMessage("Usuario/Contraseña incorrecto");
             }
 
-            ViewData["SiteKey"] = _recaptchaService.GetSiteKey();
             return View(data);
         }
 
