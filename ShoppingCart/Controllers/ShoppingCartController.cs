@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Model.Domain;
 using Model.Utils;
 using Service;
@@ -35,8 +36,6 @@ namespace ShoppingCart.Controllers
 
         public async Task<IActionResult> Index()
         {
-            //ViewBag.Categories = await _categoryService.GetAllSelectable();
-            //ViewBag.Groups = await _groupService.GetAllSelectable();
             return View();
         }
 
@@ -68,10 +67,18 @@ namespace ShoppingCart.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> AddProductToCart(long productId, int quantity)
+        public async Task<IActionResult> AddProductToCart(long productId, int quantity)
         {
-            var result = await _cartService.AddProductToCart(User.GetUserId(), productId, quantity);
-            return Json(result);
+            try
+            {
+                if (!await _cartService.AddProductToCart(User.GetUserId(), productId, quantity))
+                    return StatusCode(500);
+                return PartialView("_cart", await _cartService.GetUserCart(User.GetUserId()));
+            }
+            catch (BusinessException ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
         }
 
         public async Task<IActionResult> Cart()
@@ -150,6 +157,13 @@ namespace ShoppingCart.Controllers
                 ShowErrorMessage(ex.Message);
                 return RedirectToAction("Orders");
             }
+        }
+
+        [AllowAnonymous]
+        public async Task<JsonResult> GetProductsByTerm(string term)
+        {
+            var products = await _productService.GetAllSelectableByTerm(term);
+            return Json(products);
         }
     }
 }
