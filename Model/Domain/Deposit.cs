@@ -1,6 +1,9 @@
-﻿namespace Model.Domain
+﻿
+using EntityFrameworkCore.Projectables;
+
+namespace Model.Domain
 {
-    public class DownloadFile : Activable, Auditable
+    public class Deposit : Activable, Auditable
     {
         public long Id { get; set; }
 
@@ -10,8 +13,9 @@
         public string? LastUpdateUser { get; set; }
         public DateTime? LastUpdateDate { get; set; }
 
-        public string Name { get; set; }
-        public int Order { get; set; }
-        public eFileExtension FileExtension { get; set; }
+        public string? Identifier { get; set; }
+        public string Description { get; set; }
+
+        public virtual List<User> Users { get; set; } = new();
     }
 }

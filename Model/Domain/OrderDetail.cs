@@ -12,13 +12,9 @@ namespace Model.Domain
         public string? LastUpdateUser { get; set; }
         public DateTime? LastUpdateDate { get; set; }
 
-        [Precision(18, 4)]
         public decimal UnitPrice { get; set; }
-        [Precision(18, 4)]
         public decimal Net { get; set; }
-        [Precision(18, 4)]
         public decimal IvaPercentage { get; set; }
-        [Precision(18, 4)]
         public decimal Total { get; set; }
         public int Quantity { get; set; }
 

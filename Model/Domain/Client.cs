@@ -20,8 +20,6 @@ namespace Model.Domain
         public string? CUIL { get; set; }
         public string? Address { get; set; }
 
-        public virtual List<User> Users { get; set; } = new();
-
         [Projectable]
         public string CuilWithName => $"{CUIL} - {Name}";
     }
