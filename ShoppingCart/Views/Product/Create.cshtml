@@ -1,0 +1,121 @@
+﻿@using Model.Domain
+@model Service.Data.ProductData
+
+
+@{
+    ViewBag.Title = "Edit";
+    var controllerName = ViewContext.RouteData.Values["controller"].ToString();
+}
+
+@section Styles
+{
+    <link href="~/content/select2/css/select2.min.css" rel="stylesheet">
+    <link href="~/css/tables.css" rel="stylesheet">
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="row">
+        <div class="col-md-12">
+            <h4 class="page-title text-center">ARTÍCULO</h4>
+            @Html.HiddenFor(model => model.Id)
+        </div>
+    </div>
+    <div class="row mt-2">
+        <div class="form-group col-md-6">
+            @Html.LabelFor(model => model.Code)
+            @Html.EditorFor(Model => Model.Code, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Code, "", new { @class = "text-danger" })
+        </div>
+        <div class="form-group col-md-6">
+            @Html.LabelFor(model => model.Name)
+            @Html.EditorFor(Model => Model.Name, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="row mt-2">
+        <div class="form-group col-md-6">
+            @Html.LabelFor(model => model.SalePrice)
+            @Html.EditorFor(Model => Model.SalePrice, new { htmlAttributes = new { @class = "form-control decimal" } })
+            @Html.ValidationMessageFor(model => model.SalePrice, "", new { @class = "text-danger" })
+        </div>
+        <div class="form-group col-md-6">
+            @Html.LabelFor(model => model.IvaPercentage)
+            @Html.EditorFor(Model => Model.IvaPercentage, new { htmlAttributes = new { @class = "form-control decimal" } })
+            @Html.ValidationMessageFor(model => model.IvaPercentage, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="row mt-2">
+        <div class="form-group col-md-12">
+            @Html.LabelFor(model => model.Description)
+            @Html.TextAreaFor(Model => Model.Description, new { @class = "form-control w-100", @style = "resize: none" })
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-md-12 text-right mb-3">
+            <a href="@Url.Action("Index")" class="btn btn-secondary">Volver</a>
+            <button class="btn btn-primary">Guardar</button>
+        </div>
+    </div>
+}
+
+@section Scripts
+{
+    <script src="~/content/select2/js/select2.min.js"></script>
+    <script src="~/content/select2/js/i18n/es.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            // $('#SellerId').select2({
+            //     placeholder: 'Seleccione un vendedor',
+            //     allowClear: true,
+            //     language: 'es',
+            //     width: "100%"
+            // });
+        })
+
+        function addOffer() {
+            var element = $('.panel');
+            var data = $('form').serialize();
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("AddOffer")",
+                datatype: "json",
+                data: data,
+                traditional: true,
+                success: function (data) {
+                    var selector = $('#offersContainer');
+                    selector.empty();
+                    selector.html(data);
+                    clearAddImputs();
+                    endWait(element);
+                }
+            });
+        }
+
+        function deleteOffer(removeIndex) {
+            var element = $('.panel');
+            var data = $('form').serialize();
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("DeleteOffer")?removeIndex=" + removeIndex,
+                datatype: "json",
+                data: data,
+                traditional: true,
+                success: function (data) {
+                    var selector = $('#offersContainer');
+                    selector.empty();
+                    selector.html(data);
+                    clearAddImputs();
+                    endWait(element);
+                }
+            });
+        }
+
+        function clearAddImputs(periodIndex) {
+            $("#AddOfferUnits").val("");
+            $("#AddOfferUnitPrice").val("");
+        }
+    </script>
+}

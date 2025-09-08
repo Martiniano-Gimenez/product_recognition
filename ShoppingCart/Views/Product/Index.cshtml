@@ -116,8 +116,9 @@
                         "createdCell": function (td, cellData, rowData, row, col) {
                             var edit = "<a class='btn btn-sm btn-warning mb-1 mr-1' title='Modificar artículo' href='@Url.Action("Edit")?id=" + rowData.Id + "'> Modificar</button > ";
                             var detail = "<a class='btn btn-sm btn-info mb-1 mr-1' title='Ver detalle' href='@Url.Action("Detail")?id=" + rowData.Id + "'> Detalle</button > ";
+                            var del = "<button type='button' class='btn btn-sm btn-danger mb-1 mr-1' title='Eliminar archivo' onclick='deleteElement(" + rowData.Id + ")'> Eliminar</button>";
                             $(td).css("text-align", "center");
-                            $(td).append(edit).append(detail);
+                            $(td).append(edit).append(detail).append(del);
                         }
                     }
                 ]
@@ -137,5 +138,58 @@
                     return;
                 });
         });
+
+         function deleteElement(id) {
+            Swal.fire({
+                title: "¿Está seguro de eliminar este item?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: 'Aceptar',
+                cancelButtonText: 'Cancelar',
+                reverseButtons: true,
+                customClass: {
+                    confirmButton: 'btn btn-success',
+                    cancelButton: 'btn btn-danger mr-2'
+                },
+                buttonsStyling: false,
+                allowOutsideClick: false
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '@Url.Action("Delete")?id=' + id,
+                        type: 'POST',
+                        success: function (result) {
+                            if(result){
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Éxito',
+                                    text: 'Se ha eliminado correctamente el item',
+                                    timer: 1500,
+                                    showConfirmButton: false
+                                });
+                                $('#Grid').DataTable().draw();
+                            }else{
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: 'No se ha podido eliminar el item',
+                                    timer: 1500,
+                                    showConfirmButton: false
+                                });
+                            }
+                        },
+                        error: function () {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'No se ha podido eliminar el item',
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
+                        }
+                    });
+                }
+            });
+        }
     </script>
 }

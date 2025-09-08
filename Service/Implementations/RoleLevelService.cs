@@ -513,6 +513,15 @@ namespace Service.Implementations
             ActionRoleLevels.Add(new ActionRoleData
             {
                 Controller = "Product",
+                Action = "Delete",
+                Roles = new List<eRole>
+                {
+                    eRole.Administrator
+                }
+            });
+            ActionRoleLevels.Add(new ActionRoleData
+            {
+                Controller = "Product",
                 Action = "AddOffer",
                 Roles = new List<eRole>
                 {

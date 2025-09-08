@@ -50,5 +50,10 @@ namespace Persistance.Repositories
             return DbSet.AsNoTracking().Where(p => p.IsActive && (p.Code.Contains(term) || p.Name.Contains(term)
                                                                     || (!string.IsNullOrWhiteSpace(p.Description) && p.Description.Contains(term))));
         }
+
+        public async Task<bool> ExistCode(string code, long? ignoreId = null)
+        {
+            return await DbSet.AnyAsync(p => p.Id != ignoreId && p.IsActive && p.Code == code);
+        }
     }
 }

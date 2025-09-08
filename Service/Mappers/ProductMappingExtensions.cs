@@ -126,6 +126,18 @@ namespace Service.Mappers
             };
         }
 
+        public static Product MapToEntity(this ProductData data)
+        {
+            return new Product
+            {
+                Code = data.Code,
+                Name = data.Name,
+                SalePrice = data.SalePrice,
+                Description = data.Description,
+                IvaPercentage = data.IvaPercentage,
+            };
+        }
+
         public static Product MapToEntity(this ProductData data, Product entity)
         {
             entity.Code = data.Code;

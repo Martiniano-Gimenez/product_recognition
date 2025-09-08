@@ -56,12 +56,36 @@ namespace Service.Implementations
                 ?? throw new BusinessException("El pedido no existe");
         }
 
+        public async Task<bool> Create(ProductData data)
+        {
+            if(await _unitOfWork.ProductRepository.ExistCode(data.Code))
+                throw new BusinessException("Ya existe un artículo con ese código");
+
+            await _unitOfWork.ProductRepository.CreateAsync(data.MapToEntity());
+            return await _unitOfWork.SaveChangesAsync();
+        }
+
         public async Task<bool> Edit(ProductData data)
         {
+            if (await _unitOfWork.ProductRepository.ExistCode(data.Code, data.Id))
+                throw new BusinessException("Ya existe un artículo con ese código");
+
             var entity = await _unitOfWork.ProductRepository.GetByCondition(c => c.Id == data.Id).FirstOrDefaultAsync()
                 ?? throw new BusinessException("El artículo no existe");
 
             entity = data.MapToEntity(entity);
+
+            return await _unitOfWork.SaveChangesAsync();
+        }
+
+        public async Task<bool> Delete(long id)
+        {
+            var entity = await _unitOfWork.ProductRepository.GetByCondition(sf => sf.Id == id).FirstOrDefaultAsync();
+
+            if (entity is null)
+                return false;
+
+            _unitOfWork.ProductRepository.Remove(entity);
 
             return await _unitOfWork.SaveChangesAsync();
         }
