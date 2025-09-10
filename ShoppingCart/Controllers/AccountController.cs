@@ -91,7 +91,6 @@ namespace ShoppingCart.Controllers
             User.AddOrUpdateClaim(ClaimTypes.Name, data.UserName);
             User.AddOrUpdateClaim("UserId", data.UserId.ToString());
             User.AddOrUpdateClaim("Role", data.RoleId.ToString());
-            User.AddOrUpdateClaim("SellerId", data.SellerId?.ToString() ?? "0");
         }
 
         private async Task SignIn(IEnumerable<Claim> claims, DateTimeOffset expiresUtc)

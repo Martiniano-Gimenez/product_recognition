@@ -566,6 +566,33 @@ namespace Service.Implementations
                     eRole.Administrator
                 }
             });
+            ActionRoleLevels.Add(new ActionRoleData
+            {
+                Controller = "User",
+                Action = "Create",
+                Roles = new List<eRole>
+                {
+                    eRole.Administrator
+                }
+            });
+            ActionRoleLevels.Add(new ActionRoleData
+            {
+                Controller = "User",
+                Action = "Edit",
+                Roles = new List<eRole>
+                {
+                    eRole.Administrator
+                }
+            });
+            ActionRoleLevels.Add(new ActionRoleData
+            {
+                Controller = "User",
+                Action = "Delete",
+                Roles = new List<eRole>
+                {
+                    eRole.Administrator
+                }
+            });
             #endregion
         }
     }

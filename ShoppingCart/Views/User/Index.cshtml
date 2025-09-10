@@ -34,7 +34,6 @@
                 <tr>
                     <th class="text-center">Usuario</th>
                     <th class="text-center">Rol</th>
-                    <th class="text-center">Cliente/Vendedor</th>
                     <th class="text-center">Acciones</th>
                 </tr>
             </thead>
@@ -85,7 +84,6 @@
                 "columns": [
                     { "data": "UserName", "responsivePriority": 1, "className": "text-center" },
                     { "data": "Role", "responsivePriority": 1, "className": "text-center" },
-                    { "data": "Name", "responsivePriority": 1, "className": "text-center" },
                     { "data": "Actions", "responsivePriority": 1, "className": "text-center" },
                 ],
                 "language": {
@@ -113,9 +111,11 @@
                         "targets": [-1],
                         "orderable": false,
                         "createdCell": function (td, cellData, rowData, row, col) {
+                            var edit = "<a class='btn btn-sm btn-warning mb-1 mr-1' title='Modificar artículo' href='@Url.Action("Edit")?id=" + rowData.Id + "'> Modificar</button > ";
                             var resetPassword = "<button type='button' class='btn btn-sm btn-success mb-1 mr-1' onclick='resetPassword(" + rowData.Id + ")'> Reiniciar contraseña</button > ";
+                            var del = "<button type='button' class='btn btn-sm btn-danger mb-1 mr-1' title='Eliminar archivo' onclick='deleteElement(" + rowData.Id + ")'> Eliminar</button>";
                             $(td).css("text-align", "center");
-                            $(td).append(resetPassword);
+                            $(td).append(edit).append(resetPassword).append(del);
                         }
                     }
                 ]
@@ -186,6 +186,59 @@
                                 icon: 'error',
                                 title: 'Error',
                                 text: 'Ocurrió un error al reiniciar la contraseña',
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
+                        }
+                    });
+                }
+            });
+        }
+
+        function deleteElement(id) {
+            Swal.fire({
+                title: "¿Está seguro de eliminar este item?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: 'Aceptar',
+                cancelButtonText: 'Cancelar',
+                reverseButtons: true,
+                customClass: {
+                    confirmButton: 'btn btn-success',
+                    cancelButton: 'btn btn-danger mr-2'
+                },
+                buttonsStyling: false,
+                allowOutsideClick: false
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '@Url.Action("Delete")?id=' + id,
+                        type: 'POST',
+                        success: function (data) {
+                            if(data.result){
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Éxito',
+                                    text: 'Se ha eliminado correctamente el item',
+                                    timer: 1500,
+                                    showConfirmButton: false
+                                });
+                                $('#Grid').DataTable().draw();
+                            }else{
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: data.msg || 'No se ha podido eliminar el item',
+                                    timer: 1500,
+                                    showConfirmButton: false
+                                });
+                            }
+                        },
+                        error: function () {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'No se ha podido eliminar el item',
                                 timer: 1500,
                                 showConfirmButton: false
                             });

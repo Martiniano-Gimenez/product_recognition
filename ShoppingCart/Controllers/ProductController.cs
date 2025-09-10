@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Model.Domain;
 using Service;
 using Service.Data;
-using Service.Implementations;
 using Service.ServiceContracts;
 using ShoppingCart.Controllers.Base;
 

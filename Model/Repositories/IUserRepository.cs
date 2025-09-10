@@ -7,6 +7,7 @@ namespace Model.Repositories
         IQueryable<User> GetFilteredByPage(string filter, string orderBy, string sortDirection);
         IQueryable<User> Login(string userName, string password);
         IQueryable<User> ChangePassword(long id, string password);
-        Task<bool> ExistsAnyWithUserName(string userName);
+        Task<bool> ExistsAnyWithUserName(string userName, long? ignoreId = null);
+        Task<bool> ExistsOtherAdmin(long? ignoreId = null);
     }
 }

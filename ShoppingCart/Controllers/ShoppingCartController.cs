@@ -83,12 +83,7 @@ namespace ShoppingCart.Controllers
 
         public async Task<IActionResult> Cart()
         {
-            var userRole = User.GetRoleId();
-            if (userRole != (int)eRole.Purchasing)
-                ViewBag.Clients = userRole == (int)eRole.StockManager
-                    ? await _clientService.GetAllSelectableBySellerId(User.GetSellerId())
-                    : await _clientService.GetAllSelectable();
-
+            ViewBag.Clients = await _clientService.GetAllSelectable();
             return View(await _cartService.GetUserCart(User.GetUserId()));
         }
 
