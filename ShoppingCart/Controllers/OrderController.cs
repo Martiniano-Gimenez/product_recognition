@@ -36,6 +36,20 @@ namespace ShoppingCart.Controllers
             return new JsonResult(new { draw = param.Draw++, recordsTotal = gridData.Count, recordsFiltered = gridData.Count, data = gridData.List });
         }
 
+        public async Task<IActionResult> Create()
+        {
+            try
+            {
+                ViewBag.Clients = await _clientService.GetAllSelectable();
+                return View(new OrderData());
+            }
+            catch (BusinessException ex)
+            {
+                ShowErrorMessage(ex.Message);
+                return RedirectToAction("Index");
+            }
+        }
+
         public async Task<IActionResult> Edit(long id)
         {
             try
