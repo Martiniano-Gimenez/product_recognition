@@ -17,7 +17,7 @@ namespace Persistance.Context
         public IOrderRepository OrderRepository { get; set; }
         public IClientRepository ClientRepository { get; set; }
         public ISellerRepository SellerRepository { get; set; }
-        public ISalesFileRepository SalesFileRepository { get; set; }
+        public IProductImageRepository ProductImageRepository { get; set; }
         public IDownloadFileRepository DownloadFileRepository { get; set; }
         public ICategoryRepository CategoryRepository { get; set; }
         public IGroupRepository GroupRepository { get; set; }
@@ -31,7 +31,7 @@ namespace Persistance.Context
                          IOrderRepository orderRepository,
                          IClientRepository clientRepository,
                          ISellerRepository sellerRepository,
-                         ISalesFileRepository salesFileRepository,
+                         IProductImageRepository salesFileRepository,
                          IDownloadFileRepository downloadFileRepository, 
                          ICategoryRepository categoryRepository,
                          IGroupRepository groupRepository)
@@ -45,7 +45,7 @@ namespace Persistance.Context
             OrderRepository = orderRepository;
             ClientRepository = clientRepository;
             SellerRepository = sellerRepository;
-            SalesFileRepository = salesFileRepository;
+            ProductImageRepository = salesFileRepository;
             DownloadFileRepository = downloadFileRepository;
             CategoryRepository = categoryRepository;
             GroupRepository = groupRepository;

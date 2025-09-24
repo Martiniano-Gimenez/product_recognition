@@ -611,6 +611,44 @@ namespace Service.Implementations
                 }
             });
             #endregion
+            #region ProductImageController
+            ActionRoleLevels.Add(new ActionRoleData
+            {
+                Controller = "ProductImage",
+                Action = "Index",
+                Roles = new List<eRole>
+                {
+                    eRole.Administrator
+                }
+            });
+            ActionRoleLevels.Add(new ActionRoleData
+            {
+                Controller = "ProductImage",
+                Action = "Grid",
+                Roles = new List<eRole>
+                {
+                    eRole.Administrator
+                }
+            });
+            ActionRoleLevels.Add(new ActionRoleData
+            {
+                Controller = "ProductImage",
+                Action = "Create",
+                Roles = new List<eRole>
+                {
+                    eRole.Administrator
+                }
+            });
+            ActionRoleLevels.Add(new ActionRoleData
+            {
+                Controller = "ProductImage",
+                Action = "Delete",
+                Roles = new List<eRole>
+                {
+                    eRole.Administrator
+                }
+            });
+            #endregion
         }
     }
 }

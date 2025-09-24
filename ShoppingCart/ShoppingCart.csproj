@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\Files\DownloadFiles\**" />
+    <Content Remove="wwwroot\Files\DownloadFiles\**" />
+    <EmbeddedResource Remove="wwwroot\Files\DownloadFiles\**" />
+    <None Remove="wwwroot\Files\DownloadFiles\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.8">
       <PrivateAssets>all</PrivateAssets>
@@ -21,8 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Files\DownloadFiles\XLSX\" />
-    <Folder Include="Files\DownloadFiles\PDF\" />
+    <Folder Include="wwwroot\Files\ProductImages\" />
     <Folder Include="wwwroot\images\systemImages\" />
   </ItemGroup>
 

@@ -30,7 +30,7 @@ namespace ShoppingCart.ProgramConfiguration
             services.AddTransient<IOrderHistoryRepository, OrderHistoryRepository>();
             services.AddTransient<IClientRepository, ClientRepository>();
             services.AddTransient<ISellerRepository, SellerRepository>();
-            services.AddTransient<ISalesFileRepository, SalesFileRepository>();
+            services.AddTransient<IProductImageRepository, ProductImageRepository>();
             services.AddTransient<IDownloadFileRepository, DownloadFileRepository>();
             services.AddTransient<IGroupRepository, GroupRepository>();
             services.AddTransient<ICategoryRepository, CategoryRepository>();
@@ -45,7 +45,7 @@ namespace ShoppingCart.ProgramConfiguration
             services.AddTransient<IOrderService, OrderService>();
             services.AddTransient<IClientService, ClientService>();
             services.AddTransient<ISellerService, SellerService>();
-            services.AddTransient<ISalesFileService, SalesFileService>();
+            services.AddTransient<IProductImageService, ProductImageService>();
             services.AddTransient<IDownloadFileService, DownloadFileService>();
             services.AddTransient<IGroupService, GroupService>();
             services.AddTransient<ICategoryService, CategoryService>();

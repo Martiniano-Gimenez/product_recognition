@@ -9,7 +9,7 @@
         IOrderRepository OrderRepository { get; set; }
         IClientRepository ClientRepository { get; set; }
         ISellerRepository SellerRepository { get; set; }
-        ISalesFileRepository SalesFileRepository { get; set; }
+        IProductImageRepository ProductImageRepository { get; set; }
         IDownloadFileRepository DownloadFileRepository { get; set; }
         ICategoryRepository CategoryRepository { get; set; }
         IGroupRepository GroupRepository { get; set; }
