@@ -89,12 +89,30 @@ namespace Service.Implementations
             return data;
         }
 
+        public async Task<bool> Create(OrderData data, long userId)
+        {
+            var canCreateOrder = await _unitOfWork.UserRepository.GetByCondition(u => u.Id == userId, true)
+               .Select(u => u.IsActive && (u.RoleId == eRole.Administrator || u.RoleId == eRole.Purchasing)).FirstOrDefaultAsync();
+
+            if (!canCreateOrder)
+                throw new BusinessException("No tiene permiso para realizar esta acción");
+
+            if (!data.Products.Any())
+                throw new BusinessException("El pedido debe tener al menos un artículo");
+
+            var order = data.MapToEntity();
+
+            await _unitOfWork.OrderRepository.CreateAsync(order);
+
+            return await _unitOfWork.SaveChangesAsync();
+        }
+
         public async Task<bool> Edit(OrderData data, long userId)
         {
-            var isAdmin = await _unitOfWork.UserRepository.GetByCondition(u => u.Id == userId, true)
-                .Select(u => u.IsActive && u.RoleId == eRole.Administrator).FirstOrDefaultAsync();
+            var canEditOrder = await _unitOfWork.UserRepository.GetByCondition(u => u.Id == userId, true)
+                .Select(u => u.IsActive && (u.RoleId == eRole.Administrator || u.RoleId == eRole.Purchasing)).FirstOrDefaultAsync();
 
-            if (!isAdmin)
+            if (!canEditOrder)
                 throw new BusinessException("No tiene permiso para realizar esta acción");
 
             if (!data.Products.Any())

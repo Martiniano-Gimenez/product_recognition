@@ -73,5 +73,24 @@ namespace Service.Mappers
                     .Select(OrderHistoryMappingExtensions.MapToViewData()).ToList()
             };
         }
+
+        public static Order MapToEntity(this OrderData data)
+        {
+            return new Order
+            {
+                ClientId = data.ClientId.Value,
+                Total = data.Total,
+                Observation = data.Observation,
+                OrderDetails = data.Products.Select(p => new OrderDetail
+                {
+                    ProductId = p.ProductId,
+                    Quantity = p.Quantity,
+                    UnitPrice = p.UnitPrice,
+                    Net = p.Net,
+                    IvaPercentage = p.IvaPercentage,
+                    Total = p.Total
+                }).ToList(),
+            };
+        }
     }
 }

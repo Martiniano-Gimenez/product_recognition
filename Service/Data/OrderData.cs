@@ -11,7 +11,7 @@ namespace Service.Data
         public long? ClientId { get; set; }
 
         [Display(Name = "Fecha")]
-        public string Date { get; set; }
+        public string Date { get; set; } = DateTime.Now.ToString("dd/MM/yyyy HH:mm");
 
         [Display(Name = "Observación")]
         public string? Observation { get; set; }

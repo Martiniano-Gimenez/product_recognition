@@ -50,6 +50,23 @@ namespace ShoppingCart.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Create(OrderData data)
+        {
+            try
+            {
+                if (await _orderService.Create(data, User.GetUserId()))
+                    ShowSuccessMessage("El pedido fue creado con éxito");
+                else
+                    ShowErrorMessage("Ocurrio un error al crear el pedido, intentelo nuevamente");
+            }
+            catch (BusinessException ex)
+            {
+                ShowErrorMessage(ex.Message);
+            }
+            return RedirectToAction("Index");
+        }
+
         public async Task<IActionResult> Edit(long id)
         {
             try
