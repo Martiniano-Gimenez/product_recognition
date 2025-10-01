@@ -54,10 +54,7 @@
 {
     <nav class="nav cart-nav">
         <ul class="navlinks">
-            <li><a href="@Url.Action("Index", "ShoppingCart")" class="h5"><i class="fa-solid fa-store"></i> Realizar pedido</a></li>
-            <li><a href="@Url.Action("Cart", "ShoppingCart")" class="h5"><i class="fa-solid fa-cart-shopping"></i> Pedido Actual</a></li>
-            <li><a href="@Url.Action("Index", "Order")" class="h5"><i class="fa-solid fa-truck"></i> Pedidos</a></li>
-
+            <li><a href="@Url.Action("Index", "Order")" class="h5"><i class="fa-solid fa-cart-shopping"></i> Ventas</a></li>
             @if (roleId == (short)eRole.Administrator)
             {
                 <li style="position: relative; padding: 0; padding-top: 2px">
@@ -68,8 +65,6 @@
                         <a class="dropdown-item h5" href="@Url.Action("Index", "Client")">Clientes</a>
                         <a class="dropdown-item h5" href="@Url.Action("Index", "User")">Usuarios</a>
                         <a class="dropdown-item h5" href="@Url.Action("Index", "Product")">Artículos</a>
-                        <a class="dropdown-item h5" href="@Url.Action("Index", "SalesFile")">PDFs Ofertas</a>
-                        <a class="dropdown-item h5" href="@Url.Action("Index", "DownloadFile")">Archivos</a>
                     </div>
                 </li>
             }
@@ -81,10 +76,7 @@
         <li><a href="@Url.Action("Index", "Home")"><i class="fa-solid fa-house"></i> Inicio</a></li>
         @if (User.Identity.IsAuthenticated)
         {
-            <li><a href="@Url.Action("Index", "ShoppingCart")" class="h5"><i class="fa-solid fa-store"></i> Realizar pedido</a></li>
-            <li><a href="@Url.Action("Cart", "ShoppingCart")" class="h5"><i class="fa-solid fa-cart-shopping"></i> Pedido Actual</a></li>
-            <li><a href="@Url.Action("Index", "Order")" class="h5"><i class="fa-solid fa-truck"></i> Pedidos</a></li>
-
+            <li><a href="@Url.Action("Index", "Order")" class="h5"><i class="fa-solid fa-cart-shopping"></i> Ventas</a></li>
             @if (roleId == (short)eRole.Administrator)
             {
                 <li style="position: relative; padding: 0; padding-top: 2px">
@@ -95,8 +87,6 @@
                         <a class="dropdown-item h5" href="@Url.Action("Index", "Client")">Clientes</a>
                         <a class="dropdown-item h5" href="@Url.Action("Index", "User")">Usuarios</a>
                         <a class="dropdown-item h5" href="@Url.Action("Index", "Product")">Artículos</a>
-                        <a class="dropdown-item h5" href="@Url.Action("Index", "SalesFile")">PDFs Ofertas</a>
-                        <a class="dropdown-item h5" href="@Url.Action("Index", "DownloadFile")">Archivos</a>
                     </div>
                 </li>
             }

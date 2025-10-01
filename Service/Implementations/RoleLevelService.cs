@@ -330,7 +330,7 @@ namespace Service.Implementations
                 Roles = new List<eRole>
                 {
                     eRole.Administrator,
-                    eRole.StockManager
+                    eRole.Purchasing
                 }
             });
             ActionRoleLevels.Add(new ActionRoleData
@@ -340,7 +340,17 @@ namespace Service.Implementations
                 Roles = new List<eRole>
                 {
                     eRole.Administrator,
-                    eRole.StockManager
+                    eRole.Purchasing
+                }
+            });
+            ActionRoleLevels.Add(new ActionRoleData
+            {
+                Controller = "Order",
+                Action = "Create",
+                Roles = new List<eRole>
+                {
+                    eRole.Administrator,
+                    eRole.Purchasing
                 }
             });
             ActionRoleLevels.Add(new ActionRoleData
@@ -349,7 +359,8 @@ namespace Service.Implementations
                 Action = "Edit",
                 Roles = new List<eRole>
                 {
-                    eRole.Administrator
+                    eRole.Administrator,
+                    eRole.Purchasing
                 }
             });
             ActionRoleLevels.Add(new ActionRoleData
@@ -358,7 +369,8 @@ namespace Service.Implementations
                 Action = "GetProductsByTerm",
                 Roles = new List<eRole>
                 {
-                    eRole.Administrator
+                    eRole.Administrator,
+                    eRole.Purchasing
                 }
             });
             ActionRoleLevels.Add(new ActionRoleData
@@ -367,7 +379,8 @@ namespace Service.Implementations
                 Action = "AddProductToOrder",
                 Roles = new List<eRole>
                 {
-                    eRole.Administrator
+                    eRole.Administrator,
+                    eRole.Purchasing
                 }
             });
             ActionRoleLevels.Add(new ActionRoleData
@@ -376,7 +389,8 @@ namespace Service.Implementations
                 Action = "UpdateOrder",
                 Roles = new List<eRole>
                 {
-                    eRole.Administrator
+                    eRole.Administrator,
+                    eRole.Purchasing
                 }
             });
             ActionRoleLevels.Add(new ActionRoleData
@@ -385,7 +399,8 @@ namespace Service.Implementations
                 Action = "DeleteProduct",
                 Roles = new List<eRole>
                 {
-                    eRole.Administrator
+                    eRole.Administrator,
+                    eRole.Purchasing
                 }
             });
             ActionRoleLevels.Add(new ActionRoleData
@@ -395,7 +410,7 @@ namespace Service.Implementations
                 Roles = new List<eRole>
                 {
                     eRole.Administrator,
-                    eRole.StockManager
+                    eRole.Purchasing
                 }
             });
             ActionRoleLevels.Add(new ActionRoleData
@@ -405,6 +420,7 @@ namespace Service.Implementations
                 Roles = new List<eRole>
                 {
                     eRole.Administrator,
+                    eRole.Purchasing
                 }
             });
             ActionRoleLevels.Add(new ActionRoleData
@@ -414,6 +430,7 @@ namespace Service.Implementations
                 Roles = new List<eRole>
                 {
                     eRole.Administrator,
+                    eRole.Purchasing
                 }
             });
             #endregion
@@ -513,6 +530,15 @@ namespace Service.Implementations
             ActionRoleLevels.Add(new ActionRoleData
             {
                 Controller = "Product",
+                Action = "Delete",
+                Roles = new List<eRole>
+                {
+                    eRole.Administrator
+                }
+            });
+            ActionRoleLevels.Add(new ActionRoleData
+            {
+                Controller = "Product",
                 Action = "AddOffer",
                 Roles = new List<eRole>
                 {
@@ -552,6 +578,71 @@ namespace Service.Implementations
             {
                 Controller = "User",
                 Action = "ResetPassword",
+                Roles = new List<eRole>
+                {
+                    eRole.Administrator
+                }
+            });
+            ActionRoleLevels.Add(new ActionRoleData
+            {
+                Controller = "User",
+                Action = "Create",
+                Roles = new List<eRole>
+                {
+                    eRole.Administrator
+                }
+            });
+            ActionRoleLevels.Add(new ActionRoleData
+            {
+                Controller = "User",
+                Action = "Edit",
+                Roles = new List<eRole>
+                {
+                    eRole.Administrator
+                }
+            });
+            ActionRoleLevels.Add(new ActionRoleData
+            {
+                Controller = "User",
+                Action = "Delete",
+                Roles = new List<eRole>
+                {
+                    eRole.Administrator
+                }
+            });
+            #endregion
+            #region ProductImageController
+            ActionRoleLevels.Add(new ActionRoleData
+            {
+                Controller = "ProductImage",
+                Action = "Index",
+                Roles = new List<eRole>
+                {
+                    eRole.Administrator
+                }
+            });
+            ActionRoleLevels.Add(new ActionRoleData
+            {
+                Controller = "ProductImage",
+                Action = "Grid",
+                Roles = new List<eRole>
+                {
+                    eRole.Administrator
+                }
+            });
+            ActionRoleLevels.Add(new ActionRoleData
+            {
+                Controller = "ProductImage",
+                Action = "Create",
+                Roles = new List<eRole>
+                {
+                    eRole.Administrator
+                }
+            });
+            ActionRoleLevels.Add(new ActionRoleData
+            {
+                Controller = "ProductImage",
+                Action = "Delete",
                 Roles = new List<eRole>
                 {
                     eRole.Administrator

@@ -17,12 +17,6 @@ namespace ShoppingCart.Helpers
             return roleId is null ? throw new ArgumentException("RoleId is required") : Convert.ToInt16(roleId.Value);
         }
 
-        public static long GetSellerId(this ClaimsPrincipal claims)
-        {
-            var sellerId = ((ClaimsIdentity)claims.Identity).FindFirst("SellerId");
-            return sellerId is null ? throw new ArgumentException("SellerId is required") : Convert.ToInt16(sellerId.Value);
-        }
-
         public static void AddOrUpdateClaim(this IPrincipal currentPrincipal, string key, string value)
         {
             var identity = currentPrincipal.Identity as ClaimsIdentity;

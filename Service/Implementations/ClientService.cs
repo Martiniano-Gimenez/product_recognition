@@ -9,13 +9,10 @@ namespace Service.Implementations
     public class ClientService : IClientService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IUserService _userService;
 
-        public ClientService(IUnitOfWork unitOfWork,
-                             IUserService userService) 
+        public ClientService(IUnitOfWork unitOfWork) 
         {
             _unitOfWork = unitOfWork;
-            _userService = userService;
         }
 
         public async Task<GridData<ClientGridData>> GetAllPaginated(DTParameters param)
@@ -33,18 +30,9 @@ namespace Service.Implementations
             if (await _unitOfWork.ClientRepository.ExistsAnyWithCuil(data.CUIL))
                 throw new BusinessException($"Ya existe un cliente con el CUIL {data.CUIL}");
 
-            await _unitOfWork.BeginTransactionAsync();
+            await _unitOfWork.ClientRepository.CreateAsync(data.MapToEntity());
 
-            var newClient = data.MapToEntity();
-            await _unitOfWork.ClientRepository.CreateAsync(newClient);
-
-            if (!await _unitOfWork.SaveChangesAsync())
-                return false;
-
-            await _userService.Create(newClient.CUIL, newClient.CUIL, newClient.Id, null);
-
-            await _unitOfWork.CommitAsync();
-            return true ;
+            return await _unitOfWork.SaveChangesAsync();
         }
 
         public async Task<ClientData> GetById(long id)
@@ -61,19 +49,9 @@ namespace Service.Implementations
             if (await _unitOfWork.ClientRepository.ExistsAnyWithCuil(data.CUIL, client.Id))
                 throw new BusinessException($"Ya existe un cliente con el CUIL {data.CUIL}");
 
-            await _unitOfWork.BeginTransactionAsync();
-            var oldCuil = client.CUIL;
-
             data.MapToEntity(client);
 
-            if (!await _unitOfWork.SaveChangesAsync())
-                return false;
-
-            if(oldCuil != client.CUIL)
-                await _userService.Edit(oldCuil, client.CUIL);
-
-            await _unitOfWork.CommitAsync();
-            return true;
+            return await _unitOfWork.SaveChangesAsync();
         }
 
         public async Task<ClientViewData> GetViewById(long id)

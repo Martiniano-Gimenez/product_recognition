@@ -1,9 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Model.Domain;
 using Model.Repositories;
+using Model.Utils;
 using Service.Data;
 using Service.Mappers;
 using Service.ServiceContracts;
+using System.ComponentModel;
 
 namespace Service.Implementations
 {
@@ -31,46 +34,6 @@ namespace Service.Implementations
 
             return await _unitOfWork.SaveChangesAsync();
         }
-
-        public async Task Create(string userName, string password, long? clientId, long? sellerId)
-        {
-            if(await _unitOfWork.UserRepository.ExistsAnyWithUserName(userName))
-                throw new BusinessException($"Ya existe un usuario con el nombre {userName}");
-
-            if (string.IsNullOrWhiteSpace(userName) || string.IsNullOrWhiteSpace(password))
-                throw new BusinessException("Debe completar usuario y contraseña");
-
-            if (!clientId.HasValue && !sellerId.HasValue)
-                throw new BusinessException("Ocurrio un error al crear el usuario");
-
-            await _unitOfWork.UserRepository.CreateAsync(new User 
-            { 
-                UserName = userName,
-                Password = CryptographyService.Encrypt(password),
-                RoleId = clientId.HasValue ? eRole.Purchasing : eRole.StockManager,
-                ClientId = clientId,
-                SellerId = sellerId,
-                HasToChangePassword = true
-            });
-
-            await _unitOfWork.SaveChangesAsync();
-        }
-
-        public async Task Edit(string oldUserName, string newUserName)
-        {
-            if (await _unitOfWork.UserRepository.ExistsAnyWithUserName(newUserName))
-                throw new BusinessException($"Ya existe un usuario con el nombre {newUserName}");
-
-            if (string.IsNullOrWhiteSpace(oldUserName) || string.IsNullOrWhiteSpace(newUserName))
-                throw new BusinessException("Ocurrio un error al modificar el usuario");
-
-            var user = await _unitOfWork.UserRepository.GetByCondition(u => u.UserName == oldUserName).FirstOrDefaultAsync()
-                ?? throw new BusinessException("No se encontró usuario con el nombre anterior");
-            user.UserName = oldUserName;
-
-            await _unitOfWork.SaveChangesAsync();
-        }
-
         public async Task<GridData<UserGridData>> GetAllPaginated(DTParameters param)
         {
             var users = _unitOfWork.UserRepository
@@ -91,6 +54,62 @@ namespace Service.Implementations
             user.Password = CryptographyService.Encrypt(user.UserName);
             user.HasToChangePassword = true;
             return await _unitOfWork.SaveChangesAsync();
+        }
+
+        public async Task<UserData> GetById(long id)
+        {
+            return await _unitOfWork.UserRepository.GetByCondition(c => c.Id == id)
+                .Select(UserMappingExtensions.MapToData()).FirstOrDefaultAsync() ?? throw new BusinessException("El usuario no existe");
+        }
+
+        public async Task<bool> Create(UserData data)
+        {
+            if (await _unitOfWork.UserRepository.ExistsAnyWithUserName(data.UserName))
+                throw new BusinessException("Ya existe ese nombre de usuario");
+
+            var user = data.MapToEntity();
+            user.Password = CryptographyService.Encrypt(user.UserName);
+            user.HasToChangePassword = true;
+            await _unitOfWork.UserRepository.CreateAsync(user);
+
+            return await _unitOfWork.SaveChangesAsync();
+        }
+
+        public async Task<bool> Edit(UserData data)
+        {
+            if (await _unitOfWork.UserRepository.ExistsAnyWithUserName(data.UserName, data.UserId))
+                throw new BusinessException("Ya existe ese nombre de usuario");
+
+            var entity = await _unitOfWork.UserRepository.GetByCondition(c => c.Id == data.UserId).FirstOrDefaultAsync()
+                ?? throw new BusinessException("El usuario no existe");
+
+            entity = data.MapToEntity(entity);
+
+            return await _unitOfWork.SaveChangesAsync();
+        }
+
+        public async Task<bool> Delete(long id)
+        {
+            if (!await _unitOfWork.UserRepository.ExistsOtherAdmin(id))
+                throw new BusinessException("No puede eliminar este ususario porque no hay otro administrador");
+
+            var entity = await _unitOfWork.UserRepository.GetByCondition(sf => sf.Id == id).FirstOrDefaultAsync();
+
+            if (entity is null)
+                return false;
+
+            _unitOfWork.UserRepository.Remove(entity);
+
+            return await _unitOfWork.SaveChangesAsync();
+        }
+
+        public List<KeyValueData> GetAllRoles()
+        {
+            return Enum.GetValues(typeof(eRole)).Cast<eRole>().Select(s => new KeyValueData
+            {
+                Key = Convert.ToInt32(s),
+                Value = s.GetAttribute<DescriptionAttribute>().Description
+            }).ToList();
         }
     }
 }

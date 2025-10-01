@@ -47,9 +47,14 @@ namespace Persistance.Repositories
             return DbSet.Where(f => f.IsActive && f.Id == id && f.Password == password);
         }
 
-        public async Task<bool> ExistsAnyWithUserName(string userName)
+        public async Task<bool> ExistsAnyWithUserName(string userName, long? ignoreId = null)
         {
-            return await DbSet.AnyAsync(f => f.IsActive && f.UserName == userName);
+            return await DbSet.AnyAsync(f => f.Id != ignoreId && f.IsActive && f.UserName == userName);
+        }
+
+        public async Task<bool> ExistsOtherAdmin(long? ignoreId = null)
+        {
+            return await DbSet.AnyAsync(f => f.Id != ignoreId && f.IsActive && f.RoleId == eRole.Administrator);
         }
     }
 }

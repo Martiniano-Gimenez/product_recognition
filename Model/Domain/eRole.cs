@@ -6,9 +6,9 @@ namespace Model.Domain
     {
         [Description("Administrador")]
         Administrator = 1,
-        [Description("Compras")]
+        [Description("Ventas")]
         Purchasing = 2,
         [Description("Depósito")]
-        StockManager = 3,   
+        StockManager = 3,  
     }
 }

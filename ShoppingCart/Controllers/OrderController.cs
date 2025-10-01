@@ -36,6 +36,37 @@ namespace ShoppingCart.Controllers
             return new JsonResult(new { draw = param.Draw++, recordsTotal = gridData.Count, recordsFiltered = gridData.Count, data = gridData.List });
         }
 
+        public async Task<IActionResult> Create()
+        {
+            try
+            {
+                ViewBag.Clients = await _clientService.GetAllSelectable();
+                return View(new OrderData());
+            }
+            catch (BusinessException ex)
+            {
+                ShowErrorMessage(ex.Message);
+                return RedirectToAction("Index");
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(OrderData data)
+        {
+            try
+            {
+                if (await _orderService.Create(data, User.GetUserId()))
+                    ShowSuccessMessage("El pedido fue creado con éxito");
+                else
+                    ShowErrorMessage("Ocurrio un error al crear el pedido, intentelo nuevamente");
+            }
+            catch (BusinessException ex)
+            {
+                ShowErrorMessage(ex.Message);
+            }
+            return RedirectToAction("Index");
+        }
+
         public async Task<IActionResult> Edit(long id)
         {
             try

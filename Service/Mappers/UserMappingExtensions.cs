@@ -15,7 +15,6 @@ namespace Service.Mappers
                 UserId = entity.Id, 
                 UserName = entity.UserName,
                 RoleId = (int)entity.RoleId,
-                SellerId = entity.SellerId,
                 HasToChangePassword = entity.HasToChangePassword
             };
         }
@@ -26,7 +25,6 @@ namespace Service.Mappers
             {
                 Id = entity.Id,
                 RoleId = entity.RoleId,
-                ClientId = entity.ClientId,
                 SellerId =  entity.SellerId,
             };
         }
@@ -38,18 +36,6 @@ namespace Service.Mappers
                 Id = entity.Id,
                 UserName = entity.UserName,
                 RoleId = entity.RoleId,
-                SellerId = entity.SellerId,
-                Seller = entity.SellerId.HasValue ? new Seller 
-                { 
-                    CUIL = entity.Seller.CUIL, 
-                    Name = entity.Seller.Name, 
-                } : null,
-                ClientId = entity.ClientId,
-                Client = entity.ClientId.HasValue ? new Client
-                {
-                    CUIL = entity.Client.CUIL,
-                    Name = entity.Client.Name,
-                } : null
             };
         }
 
@@ -71,6 +57,23 @@ namespace Service.Mappers
                 Role = entity.RoleId.GetAttribute<DescriptionAttribute>().Description,
                 Name = entity.GridDataName
             };
+        }
+
+        public static User MapToEntity(this UserData data)
+        {
+            return new User
+            {
+                UserName = data.UserName,
+                RoleId = (eRole)data.RoleId
+            };
+        }
+
+        public static User MapToEntity(this UserData data, User entity)
+        {
+            entity.UserName = data.UserName;
+            entity.RoleId = (eRole)data.RoleId;
+            return entity;
+
         }
     }
 }

@@ -7,5 +7,6 @@ namespace Model.Repositories
         IQueryable<Product> GetFilteredByPage(string filter, string orderBy, string sortDirection, long? groupId, long? categoryId);
         IQueryable<Product> GetByIds(List<long> ids);
         IQueryable<Product> GetByTerm(string term);
+        Task<bool> ExistCode(string code, long? ignoreId = null);
     }
 }

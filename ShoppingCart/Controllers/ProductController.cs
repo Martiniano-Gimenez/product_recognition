@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Model.Domain;
 using Service;
 using Service.Data;
 using Service.ServiceContracts;
@@ -26,6 +25,34 @@ namespace ShoppingCart.Controllers
         {
             GridData<ProductGridData> gridData = await _productService.GetAllPaginated(param);
             return new JsonResult(new { draw = param.Draw++, recordsTotal = gridData.Count, recordsFiltered = gridData.Count, data = gridData.List });
+        }
+
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(ProductData data)
+        {
+            try
+            {
+                ModelState.Remove("Id");
+                if (ModelState.IsValid)
+                {
+                    if (await _productService.Create(data))
+                        ShowSuccessMessage("El artículo fue creado con éxito");
+                    else
+                        ShowErrorMessage("Ocurrio un error al crear el artículo, intentelo nuevamente");
+                    return RedirectToAction("Index");
+                }
+                return View(data);
+            }
+            catch (BusinessException ex)
+            {
+                ShowErrorMessage(ex.Message);
+                return RedirectToAction("Index");
+            }
         }
 
         public async Task<IActionResult> Edit(long id)
@@ -89,6 +116,12 @@ namespace ShoppingCart.Controllers
                 ShowErrorMessage(ex.Message);
                 return RedirectToAction("Index");
             }
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> Delete(long id)
+        {
+            return Json(await _productService.Delete(id));
         }
     }
 }

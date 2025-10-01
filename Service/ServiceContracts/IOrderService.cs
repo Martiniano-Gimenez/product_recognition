@@ -10,6 +10,7 @@ namespace Service.ServiceContracts
         Task<OrderData> GetById(long id);
         Task<OrderViewData> GetByIdForView(long id);
         Task<OrderData> AddProductToOrder(OrderData data);
+        Task<bool> Create(OrderData data, long userId);
         Task<bool> Edit(OrderData data, long userId);
         Task<bool> Approve(long orderId, long userId);
         Task<bool> Reject(long orderId, long userId);

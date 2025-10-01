@@ -6,9 +6,12 @@ namespace Service.ServiceContracts
     {
         Task<UserData?> Login(LoginData data);
         Task<bool> ChangePassword(ChangePasswordData data);
-        Task Create(string userName, string password, long? clientId, long? sellerId);
-        Task Edit(string oldUserName, string newUserName);
+        Task<bool> Create(UserData data);
+        Task<UserData> GetById(long id);
+        Task<bool> Edit(UserData data);
+        Task<bool> Delete(long id);
         Task<GridData<UserGridData>> GetAllPaginated(DTParameters param);
         Task<bool> ResetPassword(long userId);
+        List<KeyValueData> GetAllRoles();
     }
 }
