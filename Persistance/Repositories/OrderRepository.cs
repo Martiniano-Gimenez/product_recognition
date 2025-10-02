@@ -19,16 +19,12 @@ namespace Persistance.Repositories
             { "TotalASC", x => x.OrderBy(o => o.Total) },
             { "TotalDESC", x => x.OrderByDescending(o => o.Total) },
             { "ClientASC", x => x.OrderBy(o => o.Client.Name) },
-            { "ClientDESC", x => x.OrderByDescending(o => o.Client.Name) },
-            { "SellerASC", x => x.OrderBy(o => o.SellerId.HasValue ? o.Seller.Name : string.Empty) },
-            { "SellerDESC", x => x.OrderByDescending(o => o.SellerId.HasValue ? o.Seller.Name : string.Empty) },
-            { "StateClassASC", x => x.OrderBy(o => o.OrderState) },
-            { "StateClassDESC", x => x.OrderByDescending(o => o.OrderState) },
+            { "ClientDESC", x => x.OrderByDescending(o => o.Client.Name) }
         };
 
         public IQueryable<Order> GetFilteredByPageForShoppingCart(string filter, string orderBy, string sortDirection, long userId)
         {
-            var query = DbSet.AsNoTracking().Where(sp => sp.Client.Users.Any(u => u.Id == userId));
+            var query = DbSet.AsNoTracking();
 
             if (!string.IsNullOrWhiteSpace(filter))
                 query = query.Where(x => x.Id.ToString().Contains(filter)
@@ -44,13 +40,9 @@ namespace Persistance.Repositories
         {
             var query = DbSet.AsNoTracking();
 
-            if(roleId == (short)eRole.StockManager)
-                query = query.Where(sp => sp.Seller.Users.Any(u => u.Id == userId));
-
             if (!string.IsNullOrWhiteSpace(filter))
                 query = query.Where(x => x.Id.ToString().Contains(filter)
-                                    || x.Client.Name.Contains(filter)
-                                    || (x.SellerId.HasValue && x.Seller.Name.Contains(filter))); 
+                                    || x.Client.Name.Contains(filter)); 
 
             orderBy = string.Format("{0}{1}", orderBy, sortDirection);
             query = orderByDictionary[orderBy](query);

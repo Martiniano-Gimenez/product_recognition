@@ -9,17 +9,17 @@ using ShoppingCart.Helpers;
 
 namespace ShoppingCart.Controllers
 {
-    public class OrderController : BaseController
+    public class DepositMovementController : BaseController
     {
-        private readonly IOrderService _orderService;
+        private readonly IDepositMovementService _depositmovementService;
         private readonly IProductService _productService;
         private readonly IClientService _clientService;
 
-        public OrderController(IOrderService orderService, 
+        public DepositMovementController(IDepositMovementService depositmovementService, 
                                IProductService productService,
                                IClientService clientService)
         {
-            _orderService = orderService;
+            _depositmovementService = depositmovementService;
             _productService = productService;
             _clientService = clientService;
         }
@@ -32,7 +32,7 @@ namespace ShoppingCart.Controllers
         [HttpPost]
         public async Task<IActionResult> Grid([FromBody] DTParameters param)
         {
-            GridData<OrderGridData> gridData = await _orderService.GetAllPaginated(param, User.GetUserId(), User.GetRoleId());
+            GridData<DepositMovementGridData> gridData = await _depositmovementService.GetAllPaginated(param, User.GetUserId(), User.GetRoleId());
             return new JsonResult(new { draw = param.Draw++, recordsTotal = gridData.Count, recordsFiltered = gridData.Count, data = gridData.List });
         }
 
@@ -41,7 +41,7 @@ namespace ShoppingCart.Controllers
             try
             {
                 ViewBag.Clients = await _clientService.GetAllSelectable();
-                return View(new OrderData());
+                return View(new DepositMovementData());
             }
             catch (BusinessException ex)
             {
@@ -51,14 +51,14 @@ namespace ShoppingCart.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(OrderData data)
+        public async Task<IActionResult> Create(DepositMovementData data)
         {
             try
             {
-                if (await _orderService.Create(data, User.GetUserId()))
-                    ShowSuccessMessage("El pedido fue creado con éxito");
+                if (await _depositmovementService.Create(data, User.GetUserId()))
+                    ShowSuccessMessage("El movimiento fue creado con éxito");
                 else
-                    ShowErrorMessage("Ocurrio un error al crear el pedido, intentelo nuevamente");
+                    ShowErrorMessage("Ocurrio un error al crear el movimiento, intentelo nuevamente");
             }
             catch (BusinessException ex)
             {
@@ -72,7 +72,7 @@ namespace ShoppingCart.Controllers
             try
             {
                 ViewBag.Clients = await _clientService.GetAllSelectable();
-                return View(await _orderService.GetById(id));
+                return View(await _depositmovementService.GetById(id));
             }
             catch (BusinessException ex)
             {
@@ -82,14 +82,14 @@ namespace ShoppingCart.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(OrderData data)
+        public async Task<IActionResult> Edit(DepositMovementData data)
         {
             try
             {
-                if (await _orderService.Edit(data, User.GetUserId()))
-                    ShowSuccessMessage("El pedido fue actualizado con éxito");
+                if (await _depositmovementService.Edit(data, User.GetUserId()))
+                    ShowSuccessMessage("El movimiento fue actualizado con éxito");
                 else
-                    ShowErrorMessage("Ocurrio un error al actualizar el pedido, intentelo nuevamente");
+                    ShowErrorMessage("Ocurrio un error al actualizar el movimiento, intentelo nuevamente");
             }
             catch (BusinessException ex)
             {
@@ -105,21 +105,21 @@ namespace ShoppingCart.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddProductToOrder(OrderData data)
+        public async Task<IActionResult> AddProductToDepositMovement(DepositMovementData data)
         {
             ModelState.Clear();
-            return PartialView("_edit", await _orderService.AddProductToOrder(data));
+            return PartialView("_edit", await _depositmovementService.AddProductToDepositMovement(data));
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateOrder(OrderData data)
+        public async Task<IActionResult> UpdateDepositMovement(DepositMovementData data)
         {
             ModelState.Clear();
             return PartialView("_edit", data);
         }
 
         [HttpPost]
-        public IActionResult DeleteProduct(OrderData data, long productId)
+        public IActionResult DeleteProduct(DepositMovementData data, long productId)
         {
             ModelState.Clear();
             data.Products = data.Products.Where(p => p.ProductId != productId).ToList();
@@ -130,7 +130,7 @@ namespace ShoppingCart.Controllers
         {
             try
             {
-                return View(await _orderService.GetByIdForView(id));
+                return View(await _depositmovementService.GetByIdForView(id));
             }
             catch (BusinessException ex)
             {

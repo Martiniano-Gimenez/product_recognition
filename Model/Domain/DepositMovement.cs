@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Model.Domain
 {
-    public class Order : Auditable
+    public class DepositMovement : Auditable
     {
         public long Id { get; set; }
 
@@ -14,14 +14,13 @@ namespace Model.Domain
 
         public DateTime Date { get; set; } = DateTime.Now;
         public string? Observation { get; set; }
-        public decimal Net { get; set; }
-        public decimal Iva { get; set; }
-        public decimal Total { get; set; }
 
-        public long ClientId { get; set; }
+        public long? OriginDepositId { get; set; }
+        public long? DestinationDepositId { get; set; }
 
-        public virtual Client Client { get; set; }  
+        public virtual Deposit OriginDeposit { get; set; }  
+        public virtual Deposit DestinationDeposit { get; set; }  
 
-        public virtual List<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
+        public virtual List<DepositMovementDetail> DepositMovementDetails { get; set; } = new List<DepositMovementDetail>();
     }
 }

@@ -649,6 +649,118 @@ namespace Service.Implementations
                 }
             });
             #endregion
+            #region DepositMovementController
+            ActionRoleLevels.Add(new ActionRoleData
+            {
+                Controller = "DepositMovement",
+                Action = "Index",
+                Roles = new List<eRole>
+                {
+                    eRole.Administrator,
+                    eRole.StockManager
+                }
+            });
+            ActionRoleLevels.Add(new ActionRoleData
+            {
+                Controller = "DepositMovement",
+                Action = "Grid",
+                Roles = new List<eRole>
+                {
+                    eRole.Administrator,
+                    eRole.StockManager
+                }
+            });
+            ActionRoleLevels.Add(new ActionRoleData
+            {
+                Controller = "DepositMovement",
+                Action = "Create",
+                Roles = new List<eRole>
+                {
+                    eRole.Administrator,
+                    eRole.StockManager
+                }
+            });
+            ActionRoleLevels.Add(new ActionRoleData
+            {
+                Controller = "DepositMovement",
+                Action = "Edit",
+                Roles = new List<eRole>
+                {
+                    eRole.Administrator,
+                    eRole.StockManager
+                }
+            });
+            ActionRoleLevels.Add(new ActionRoleData
+            {
+                Controller = "DepositMovement",
+                Action = "GetProductsByTerm",
+                Roles = new List<eRole>
+                {
+                    eRole.Administrator,
+                    eRole.StockManager
+                }
+            });
+            ActionRoleLevels.Add(new ActionRoleData
+            {
+                Controller = "DepositMovement",
+                Action = "AddProductToOrder",
+                Roles = new List<eRole>
+                {
+                    eRole.Administrator,
+                    eRole.StockManager
+                }
+            });
+            ActionRoleLevels.Add(new ActionRoleData
+            {
+                Controller = "DepositMovement",
+                Action = "UpdateOrder",
+                Roles = new List<eRole>
+                {
+                    eRole.Administrator,
+                    eRole.StockManager
+                }
+            });
+            ActionRoleLevels.Add(new ActionRoleData
+            {
+                Controller = "DepositMovement",
+                Action = "DeleteProduct",
+                Roles = new List<eRole>
+                {
+                    eRole.Administrator,
+                    eRole.StockManager
+                }
+            });
+            ActionRoleLevels.Add(new ActionRoleData
+            {
+                Controller = "DepositMovement",
+                Action = "Detail",
+                Roles = new List<eRole>
+                {
+                    eRole.Administrator,
+                    eRole.StockManager
+                }
+            });
+            ActionRoleLevels.Add(new ActionRoleData
+            {
+                Controller = "DepositMovement",
+                Action = "Approve",
+                Roles = new List<eRole>
+                {
+                    eRole.Administrator,
+                    eRole.StockManager
+                }
+            });
+            ActionRoleLevels.Add(new ActionRoleData
+            {
+                Controller = "DepositMovement",
+                Action = "Reject",
+                Roles = new List<eRole>
+                {
+                    eRole.Administrator,
+                    eRole.StockManager
+                }
+            });
+            #endregion
         }
     }
 }

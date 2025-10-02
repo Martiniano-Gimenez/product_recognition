@@ -7,7 +7,7 @@ namespace Service.Data
     {
         public long Id { get; set; }
 
-        [Display(Name = "Tipo")]
+        [Display(Name = "Cliente")]
         public long? ClientId { get; set; }
 
         [Display(Name = "Fecha")]

@@ -12,43 +12,31 @@ namespace Persistance.Context
 
         public IUserRepository UserRepository { get; set; }
         public IProductRepository ProductRepository { get; set; }
-        public ICartRepository CartRepository { get; set; }
-        public ICartDetailRepository CartDetailRepository { get; set; }
         public IOrderRepository OrderRepository { get; set; }
         public IClientRepository ClientRepository { get; set; }
-        public ISellerRepository SellerRepository { get; set; }
         public IProductImageRepository ProductImageRepository { get; set; }
-        public IDownloadFileRepository DownloadFileRepository { get; set; }
         public ICategoryRepository CategoryRepository { get; set; }
-        public IGroupRepository GroupRepository { get; set; }
+        public IDepositMovementRepository DepositMovementRepository { get; set; }
 
         public UnitOfWork(ShoppingCartContext context,
                          IHttpContextAccessor httpContextAccessor, 
                          IUserRepository userRepository,
                          IProductRepository productRepository,
-                         ICartRepository cartRepository,
-                         ICartDetailRepository cartDetailRepository,
                          IOrderRepository orderRepository,
                          IClientRepository clientRepository,
-                         ISellerRepository sellerRepository,
                          IProductImageRepository salesFileRepository,
-                         IDownloadFileRepository downloadFileRepository, 
                          ICategoryRepository categoryRepository,
-                         IGroupRepository groupRepository)
+                         IDepositMovementRepository depositMovementRepository)
         {
             _context = context;
             _httpContextAccessor = httpContextAccessor;
             UserRepository = userRepository;
             ProductRepository = productRepository;
-            CartRepository = cartRepository;
-            CartDetailRepository = cartDetailRepository;
             OrderRepository = orderRepository;
             ClientRepository = clientRepository;
-            SellerRepository = sellerRepository;
             ProductImageRepository = salesFileRepository;
-            DownloadFileRepository = downloadFileRepository;
             CategoryRepository = categoryRepository;
-            GroupRepository = groupRepository;
+            DepositMovementRepository = depositMovementRepository;
         }
 
         public async Task<bool> SaveChangesAsync()

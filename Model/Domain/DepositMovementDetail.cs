@@ -1,6 +1,8 @@
-﻿namespace Model.Domain
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace Model.Domain
 {
-    public class CartDetail : Activable, Auditable
+    public class DepositMovementDetail : Activable, Auditable
     {
         public long Id { get; set; }
 
@@ -13,10 +15,9 @@
         public int Quantity { get; set; }
 
         public long ProductId { get; set; }
-        public long CartId { get; set; }
+        public long DepositMovementId { get; set; }
 
         public virtual Product Product { get; set; }
-        public virtual Cart Cart { get; set; }  
-
+        public virtual DepositMovement DepositMovement { get; set; }
     }
 }

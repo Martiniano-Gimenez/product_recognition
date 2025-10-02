@@ -9,13 +9,10 @@ namespace ShoppingCart.Controllers
     public class ClientController : BaseController
     {
         private readonly IClientService _clientService;
-        private readonly ISellerService _sellerService;
 
-        public ClientController(IClientService clientService,
-                                ISellerService sellerService)
+        public ClientController(IClientService clientService)
         {
             _clientService = clientService;
-            _sellerService = sellerService;
         }
 
         public IActionResult Index()
@@ -32,7 +29,6 @@ namespace ShoppingCart.Controllers
 
         public async Task<IActionResult> Create()
         {
-            ViewBag.Sellers = await _sellerService.GetAllSelectable();
             return View();
         }
 
@@ -49,7 +45,6 @@ namespace ShoppingCart.Controllers
                         ShowErrorMessage("Ocurrio un error al crear el cliente, intentelo nuevamente");
                     return RedirectToAction("Index");
                 }
-                ViewBag.Sellers = await _sellerService.GetAllSelectable();
                 return View(data);
             }
             catch (BusinessException ex)
@@ -63,7 +58,6 @@ namespace ShoppingCart.Controllers
         {
             try
             {
-                ViewBag.Sellers = await _sellerService.GetAllSelectable();
                 return View(await _clientService.GetById(id));
             }
             catch (BusinessException ex)
@@ -86,7 +80,6 @@ namespace ShoppingCart.Controllers
                         ShowErrorMessage("Ocurrio un error al actualizar el cliente, intentelo nuevamente");
                     return RedirectToAction("Index");
                 }
-                ViewBag.Sellers = await _sellerService.GetAllSelectable();
                 return View(data);
             }
             catch (BusinessException ex)

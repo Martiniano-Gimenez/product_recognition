@@ -1,6 +1,4 @@
-﻿using EntityFrameworkCore.Projectables;
-
-namespace Model.Domain
+﻿namespace Model.Domain
 {
     public class User : Activable, Auditable
     {
@@ -16,14 +14,5 @@ namespace Model.Domain
         public string? Password { get; set; }
         public eRole RoleId { get; set; }
         public bool HasToChangePassword { get; set; } = true;
-
-        public long? ClientId { get; set; }
-        public long? SellerId { get;set; }
-
-        public virtual Client Client { get; set; }
-        public virtual Seller Seller { get; set; }
-
-        [Projectable]
-        public string GridDataName => SellerId.HasValue ? Seller.CuilWithName : (ClientId.HasValue ? Client.CuilWithName : string.Empty);
     }
 }

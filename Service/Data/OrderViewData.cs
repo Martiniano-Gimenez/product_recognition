@@ -30,7 +30,6 @@ namespace Service.Data
 
 
         public List<OrderDetailViewData> Products { get; set; } = new List<OrderDetailViewData>();
-        public List<OrderHistoryViewData> OrderHistories { get; set; } = new List<OrderHistoryViewData>();
 
         public string DisplayTotal => Total.AsMoneyString();
         public string StateDescription => OrderState.GetAttribute<DescriptionAttribute>().Description;

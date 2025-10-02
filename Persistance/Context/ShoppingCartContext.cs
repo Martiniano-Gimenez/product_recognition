@@ -7,15 +7,10 @@ namespace Persistance.Context
     {
         public DbSet<User> User { get; set; }
         public DbSet<Client> Client { get; set; }
-        public DbSet<Cart> Cart { get; set; }
-        public DbSet<CartDetail> CartDetail { get; set; }
         public DbSet<Category> Category { get; set; }
         public DbSet<Order> Order { get; set; }
         public DbSet<OrderDetail> OrderDetail { get; set; }
         public DbSet<Product> Product { get; set; }
-        public DbSet<Seller> Seller { get; set; }
-        public DbSet<SalesFile> SalesFile { get; set; }
-        public DbSet<DownloadFile> DownloadFile { get; set; }
 
         public ShoppingCartContext(DbContextOptions<ShoppingCartContext> options)
             : base(options)

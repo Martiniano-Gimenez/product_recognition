@@ -35,30 +35,6 @@ namespace Service.Implementations
             return ordersPaginated.MapToPagGridData();
         }
 
-        public async Task<bool> Create(CartData data, long userId)
-        {
-            if(!data.Products.Any())
-                throw new BusinessException("El pedido debe tener al menos un artículo");
-
-            if (data.Products.Any(p => p.Quantity <= 0))
-                throw new BusinessException("Hay artículos con cantidad 0");
-
-            await CheckAnyPriceIsChange(data);
-
-            var user = await _unitOfWork.UserRepository.GetByCondition(u => u.Id == userId)
-                .Select(UserMappingExtensions.MapWithRoleAndIds()).FirstOrDefaultAsync() ?? throw new BusinessException("El usuario no existe");
-
-            long clientId = user.RoleId == eRole.Purchasing ? user.ClientId.Value : data.ClientId;
-            long? sellerId = user.RoleId == eRole.StockManager ? user.SellerId.Value : null;
-
-            var newEntity = data.MapToOrder(clientId, sellerId);
-            newEntity.OrderHistories.Add(new OrderHistory { OrderState = eOrderState.Analysis, UserId = userId });
-            await _unitOfWork.OrderRepository.CreateAsync(newEntity);
-            _unitOfWork.CartRepository.Remove(await _unitOfWork.CartRepository.GetByUserId(userId).FirstOrDefaultAsync());
-
-            return await _unitOfWork.SaveChangesAsync();
-        }
-
         public async Task<OrderData> GetById(long id)
         {
             return await _unitOfWork.OrderRepository.GetByCondition(o => o.Id == id)
@@ -131,57 +107,6 @@ namespace Service.Implementations
             order.Total = order.OrderDetails.Where(od => od.IsActive).Sum(od => od.Total);
 
             return await _unitOfWork.SaveChangesAsync();
-        }
-
-        public async Task<bool> Approve(long orderId, long userId)
-        {
-            var isAdmin = await _unitOfWork.UserRepository.GetByCondition(u => u.Id == userId, true)
-                .Select(u => u.IsActive && u.RoleId == eRole.Administrator).FirstOrDefaultAsync();
-
-            if (!isAdmin)
-                return false;
-
-            var order = await _unitOfWork.OrderRepository.GetByCondition(o => o.Id == orderId && o.OrderState == eOrderState.Analysis).FirstOrDefaultAsync();
-
-            if (order is null)
-                return false;
-
-            order.OrderState = eOrderState.Preparation;
-
-            return await _unitOfWork.SaveChangesAsync();
-        }
-
-        public async Task<bool> Reject(long orderId, long userId)
-        {
-            var isAdmin = await _unitOfWork.UserRepository.GetByCondition(u => u.Id == userId, true)
-                .Select(u => u.IsActive && u.RoleId == eRole.Administrator).FirstOrDefaultAsync();
-
-            if (!isAdmin)
-                return false;
-
-            var order = await _unitOfWork.OrderRepository.GetByCondition(o => o.Id == orderId && o.OrderState == eOrderState.Analysis).FirstOrDefaultAsync();
-
-            if (order is null)
-                return false;
-
-            order.OrderState = eOrderState.Rejected;
-
-            return await _unitOfWork.SaveChangesAsync();
-        }
-
-        private async Task CheckAnyPriceIsChange(CartData data)
-        {
-            var products = await _unitOfWork.ProductRepository.GetByIds(data.Products.Select(p => p.ProductId).ToList())
-                .Select(ProductMappingExtensions.MapWithSalePriceAndProductOffers()).ToListAsync();
-
-            data.Products.ForEach(p =>
-            {
-                var product = products.FirstOrDefault(prod => prod.Id == p.ProductId)
-                    ?? throw new BusinessException("Ocurrio un error al generar su pedido, intentelo nuevamente");
-
-                if (p.Price != product.SalePrice || p.IvaPercentage != product.IvaPercentage)
-                    throw new BusinessException("Algunos artículos sufrieron modificaciones en sus precios, revise el pedido y confirme nuevamente");
-            });
         }
     }
 }

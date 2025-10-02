@@ -14,10 +14,7 @@ namespace Service.Mappers
                 Id = entity.Id,
                 Date = entity.Date,
                 Total = entity.Total,
-                Client = new Client { Name = entity.Client.Name }, 
-                SellerId = entity.SellerId,
-                Seller = entity.SellerId.HasValue ? new Seller { Name = entity.Seller.Name } : null,
-                OrderState = entity.OrderState,
+                Client = new Client { Name = entity.Client.Name }
             };
         }
 
@@ -37,9 +34,7 @@ namespace Service.Mappers
                 Id = entity.Id,
                 Date = entity.Date.ToString("dd/MM/yyyy HH:mm"),
                 Total = entity.Total.AsMoneyString(),
-                Client = entity.Client.Name,
-                Seller = entity.SellerDisplay,
-                OrderState = entity.OrderState
+                Client = entity.Client.Name
             };
         }
 
@@ -62,15 +57,11 @@ namespace Service.Mappers
             {
                 Id = entity.Id,
                 Client = entity.Client.Name,
-                Seller = entity.SellerDisplay,
                 Date = entity.Date.ToString("dd/MM/yyyy HH:mm"),
-                OrderState = entity.OrderState,
                 Total = entity.Total,
                 Observation = entity.Observation,
                 Products = entity.OrderDetails.AsQueryable().Where(od => od.IsActive)
                     .Select(OrderDetailMappingExtensions.MapToOrderDetailViewData()).ToList(),
-                OrderHistories = entity.OrderHistories.AsQueryable().OrderBy(oh => oh.Date)
-                    .Select(OrderHistoryMappingExtensions.MapToViewData()).ToList()
             };
         }
 

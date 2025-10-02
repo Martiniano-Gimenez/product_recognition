@@ -24,8 +24,7 @@ namespace Service.Mappers
             return entity => new User
             {
                 Id = entity.Id,
-                RoleId = entity.RoleId,
-                SellerId =  entity.SellerId,
+                RoleId = entity.RoleId
             };
         }
 
@@ -55,7 +54,6 @@ namespace Service.Mappers
                 Id = entity.Id,
                 UserName = entity.UserName,
                 Role = entity.RoleId.GetAttribute<DescriptionAttribute>().Description,
-                Name = entity.GridDataName
             };
         }
 

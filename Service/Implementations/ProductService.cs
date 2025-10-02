@@ -1,12 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Model.Domain;
 using Model.Repositories;
-using OfficeOpenXml;
 using Service.Data;
 using Service.Mappers;
 using Service.ServiceContracts;
-using System.Data.Odbc;
 
 namespace Service.Implementations
 {
@@ -88,12 +84,6 @@ namespace Service.Implementations
             _unitOfWork.ProductRepository.Remove(entity);
 
             return await _unitOfWork.SaveChangesAsync();
-        }
-
-        public async Task<ShoppingCartProductDetailData> GetShoppingCartProductDetailData(long productId)
-        {
-            return await _unitOfWork.ProductRepository.GetByCondition(p => p.Id == productId)
-                .Select(ProductMappingExtensions.MapToShoppingCartProductDetailData()).FirstOrDefaultAsync() ?? new ShoppingCartProductDetailData();
         }
 
         public async Task<decimal> GetPriceByQuantity(long productId, int quantity)

@@ -84,16 +84,6 @@ namespace Service.Mappers
             };
         }
 
-        public static Expression<Func<Product, ShoppingCartProductDetailData>> MapToShoppingCartProductDetailData()
-        {
-            return entity => new ShoppingCartProductDetailData
-            {
-                Category = entity.CategoryId.HasValue ? entity.Category.Name : "-",
-                Description = !string.IsNullOrWhiteSpace(entity.Description) ? entity.Description : "-",
-                Images = entity.ProductImages.Select(i => i.Path).ToList()
-            };
-        }
-
         public static Expression<Func<Product, KeyValueData>> MapForGetByTerm()
         {
             return entity => new KeyValueData
@@ -113,6 +103,17 @@ namespace Service.Mappers
                 UnitPrice = entity.SalePrice,
                 Quantity = quantity,
                 IvaPercentage = entity.IvaPercentage
+            };
+        }
+
+        public static Expression<Func<Product, DepositMovementDetailData>> MapToDepositMovementDetailData(int quantity)
+        {
+            return entity => new DepositMovementDetailData
+            {
+                ProductId = entity.Id,
+                Code = entity.Code,
+                Name = entity.Name,
+                Quantity = quantity,
             };
         }
 

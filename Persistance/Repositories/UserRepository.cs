@@ -15,9 +15,7 @@ namespace Persistance.Repositories
             { "UserNameASC", x => x.OrderBy(o => o.UserName) },
             { "UserNameDESC", x => x.OrderByDescending(o => o.UserName) },
             { "RoleASC", x => x.OrderBy(o => o.RoleId) },
-            { "RoleDESC", x => x.OrderByDescending(o => o.RoleId) },
-            { "NameASC", x => x.OrderBy(o => o.SellerId.HasValue ? o.Seller.CUIL : (o.ClientId.HasValue ? o.Client.CUIL : string.Empty)).ThenBy(o => o.SellerId.HasValue ? o.Seller.Name : (o.ClientId.HasValue ? o.Client.Name : string.Empty)) },
-            { "NameDESC", x => x.OrderByDescending(o => o.SellerId.HasValue ? o.Seller.Name : (o.ClientId.HasValue ? o.Client.Name : string.Empty)).ThenByDescending(o => o.SellerId.HasValue ? o.Seller.Name : (o.ClientId.HasValue ? o.Client.Name : string.Empty))  },
+            { "RoleDESC", x => x.OrderByDescending(o => o.RoleId) }
         };
 
         public IQueryable<User> GetFilteredByPage(string filter, string orderBy, string sortDirection)
@@ -25,11 +23,7 @@ namespace Persistance.Repositories
             var query = DbSet.AsNoTracking().Where(sp => sp.IsActive);
 
             if (!string.IsNullOrWhiteSpace(filter))
-                query = query.Where(x => x.UserName.Contains(filter)
-                                      || (x.SellerId.HasValue && x.Seller.CUIL.Contains(filter))
-                                      || (x.SellerId.HasValue && x.Seller.Name.Contains(filter))
-                                      || (x.ClientId.HasValue && x.Seller.CUIL.Contains(filter))
-                                      || (x.ClientId.HasValue && x.Client.Name.Contains(filter)));
+                query = query.Where(x => x.UserName.Contains(filter));
 
             orderBy = string.Format("{0}{1}", orderBy, sortDirection);
             query = orderByDictionary[orderBy](query);

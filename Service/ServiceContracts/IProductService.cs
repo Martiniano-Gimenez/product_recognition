@@ -11,7 +11,6 @@ namespace Service.ServiceContracts
         Task<bool> Create(ProductData data);
         Task<bool> Edit(ProductData data);
         Task<bool> Delete(long id);
-        Task<ShoppingCartProductDetailData> GetShoppingCartProductDetailData(long productId);
         Task<decimal> GetPriceByQuantity(long productId, int quantity);
         Task<List<KeyValueData>> GetAllSelectableByTerm(string term);
     }
