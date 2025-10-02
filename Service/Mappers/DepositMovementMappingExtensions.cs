@@ -13,8 +13,8 @@ namespace Service.Mappers
             {
                 Id = entity.Id,
                 Date = entity.Date,
-                OriginDeposit = new Deposit { Identifier = entity.OriginDeposit.Identifier },
-                DestinationDeposit = new Deposit { Identifier = entity.DestinationDeposit.Identifier },
+                OriginDeposit = entity.OriginDepositId.HasValue ? new Deposit { Identifier = entity.OriginDeposit.Identifier } : null,
+                DestinationDeposit = entity.DestinationDepositId.HasValue ? new Deposit { Identifier = entity.DestinationDeposit.Identifier } : null,
             };
         }
 
@@ -33,8 +33,8 @@ namespace Service.Mappers
             {
                 Id = entity.Id,
                 Date = entity.Date.ToString("dd/MM/yyyy HH:mm"),
-                OriginDeposit = entity.OriginDeposit.Identifier,
-                DestinationDeposit = entity.DestinationDeposit.Identifier,
+                OriginDeposit = entity.OriginDeposit?.Identifier,
+                DestinationDeposit = entity.DestinationDeposit?.Identifier,
             };
         }
 

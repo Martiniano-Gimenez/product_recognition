@@ -11,6 +11,8 @@ namespace Persistance.Context
         public DbSet<Order> Order { get; set; }
         public DbSet<OrderDetail> OrderDetail { get; set; }
         public DbSet<Product> Product { get; set; }
+        public DbSet<DepositMovement> DepositMovement { get; set; }
+        public DbSet<DepositMovementDetail> DepositMovementDetail { get; set; }
 
         public ShoppingCartContext(DbContextOptions<ShoppingCartContext> options)
             : base(options)

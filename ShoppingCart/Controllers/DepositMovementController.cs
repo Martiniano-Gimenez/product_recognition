@@ -40,7 +40,7 @@ namespace ShoppingCart.Controllers
         {
             try
             {
-                ViewBag.Clients = await _clientService.GetAllSelectable();
+                ViewBag.Deposits = await _depositmovementService.GetAllDepositsSelectable();
                 return View(new DepositMovementData());
             }
             catch (BusinessException ex)
@@ -71,7 +71,7 @@ namespace ShoppingCart.Controllers
         {
             try
             {
-                ViewBag.Clients = await _clientService.GetAllSelectable();
+                ViewBag.Deposits = await _depositmovementService.GetAllDepositsSelectable();
                 return View(await _depositmovementService.GetById(id));
             }
             catch (BusinessException ex)

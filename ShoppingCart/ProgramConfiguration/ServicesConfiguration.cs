@@ -29,6 +29,7 @@ namespace ShoppingCart.ProgramConfiguration
             services.AddTransient<IProductImageRepository, ProductImageRepository>();
             services.AddTransient<ICategoryRepository, CategoryRepository>();
             services.AddTransient<IDepositMovementRepository, DepositMovementRepository>();
+            services.AddTransient<IDepositRepository, DepositRepository>();
             #endregion
 
             #region Services

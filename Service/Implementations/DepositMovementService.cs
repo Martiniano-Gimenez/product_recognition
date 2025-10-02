@@ -15,6 +15,16 @@ namespace Service.Implementations
             _unitOfWork = unitOfWork;
         }
 
+        public async Task<List<KeyValueData>> GetAllDepositsSelectable()
+        {
+            return await _unitOfWork.DepositRepository.GetAll()
+                .Select(entity => new KeyValueData
+                {
+                    Key = entity.Id,
+                    Value = entity.Identifier + " - " + entity.Description,
+                }).ToListAsync();
+        }
+
         public async Task<GridData<DepositMovementGridData>> GetAllPaginated(DTParameters param, long userId, short roleId)
         {
             var DepositMovements = _unitOfWork.DepositMovementRepository
@@ -58,7 +68,7 @@ namespace Service.Implementations
         public async Task<bool> Create(DepositMovementData data, long userId)
         {
             var canCreateDepositMovement = await _unitOfWork.UserRepository.GetByCondition(u => u.Id == userId, true)
-               .Select(u => u.IsActive && (u.RoleId == eRole.Administrator || u.RoleId == eRole.Purchasing)).FirstOrDefaultAsync();
+               .Select(u => u.IsActive && (u.RoleId == eRole.Administrator || u.RoleId == eRole.StockManager)).FirstOrDefaultAsync();
 
             if (!canCreateDepositMovement)
                 throw new BusinessException("No tiene permiso para realizar esta acción");
@@ -76,7 +86,7 @@ namespace Service.Implementations
         public async Task<bool> Edit(DepositMovementData data, long userId)
         {
             var canEditDepositMovement = await _unitOfWork.UserRepository.GetByCondition(u => u.Id == userId, true)
-                .Select(u => u.IsActive && (u.RoleId == eRole.Administrator || u.RoleId == eRole.Purchasing)).FirstOrDefaultAsync();
+                .Select(u => u.IsActive && (u.RoleId == eRole.Administrator || u.RoleId == eRole.StockManager)).FirstOrDefaultAsync();
 
             if (!canEditDepositMovement)
                 throw new BusinessException("No tiene permiso para realizar esta acción");

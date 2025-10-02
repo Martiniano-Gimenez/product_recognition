@@ -703,7 +703,7 @@ namespace Service.Implementations
             ActionRoleLevels.Add(new ActionRoleData
             {
                 Controller = "DepositMovement",
-                Action = "AddProductToOrder",
+                Action = "AddProductToDepositMovement",
                 Roles = new List<eRole>
                 {
                     eRole.Administrator,
@@ -713,7 +713,7 @@ namespace Service.Implementations
             ActionRoleLevels.Add(new ActionRoleData
             {
                 Controller = "DepositMovement",
-                Action = "UpdateOrder",
+                Action = "UpdateDepositMovement",
                 Roles = new List<eRole>
                 {
                     eRole.Administrator,
@@ -743,17 +743,7 @@ namespace Service.Implementations
             ActionRoleLevels.Add(new ActionRoleData
             {
                 Controller = "DepositMovement",
-                Action = "Approve",
-                Roles = new List<eRole>
-                {
-                    eRole.Administrator,
-                    eRole.StockManager
-                }
-            });
-            ActionRoleLevels.Add(new ActionRoleData
-            {
-                Controller = "DepositMovement",
-                Action = "Reject",
+                Action = "Delete",
                 Roles = new List<eRole>
                 {
                     eRole.Administrator,

@@ -16,7 +16,7 @@
 
 <div class="row">
     <div class="col-md-12">
-        <h4 class="page-title text-center">VENTAS</h4>
+        <h4 class="page-title text-center">MOVIMIENTOS DE DEPÓSITO</h4>
     </div>
 </div>
 <div class="row mb-3">
@@ -35,9 +35,9 @@
             <thead>
                 <tr>
                     <th class="text-center">Número</th>
-                    <th class="text-center">Cliente</th>
                     <th class="text-center">Fecha</th>
-                    <th class="text-center">Total</th>
+                    <th class="text-center">Depósito origen</th>
+                    <th class="text-center">Depósito destino</th>
                     <th class="text-center">Acciones</th>
                 </tr>
             </thead>
@@ -95,9 +95,9 @@
                 "order": [[0, "desc"]],
                 "columns": [
                     { "data": "Id", "responsivePriority": 1, "className": "text-center" },
-                    { "data": "Client", "responsivePriority": 4, "className": "text-center" },
                     { "data": "Date", "responsivePriority": 4, "className": "text-center" },
-                    { "data": "Total", "responsivePriority": 1, "className": "text-center" },
+                    { "data": "OriginDeposit", "responsivePriority": 1, "className": "text-center" },
+                    { "data": "DestinationDeposit", "responsivePriority": 1, "className": "text-center" },
                     { "data": "Actions", "responsivePriority": 1, "className": "text-center" },
                 ],
                 "language": {
@@ -159,111 +159,5 @@
                     return;
                 });
         });
-
-        function approve(id) {
-            Swal.fire({
-                title: "¿Está seguro que desea aprobar este pedido?",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonText: 'Aceptar',
-                cancelButtonText: 'Cancelar',
-                reverseButtons: true,
-                customClass: {
-                    confirmButton: 'btn btn-success',
-                    cancelButton: 'btn btn-danger mr-2'
-                },
-                buttonsStyling: false,
-                allowOutsideClick: false
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: '@Url.Action("Approve")?id=' + id,
-                        type: 'POST',
-                        success: function (result) {
-                            if (result) {
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Éxito',
-                                    text: 'Se ha aprobado correctamente el pedido',
-                                    timer: 1500,
-                                    showConfirmButton: false
-                                });
-                                $('#Grid').DataTable().draw();
-                            } else {
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Error',
-                                    text: 'No se ha podido aprobar el pedido',
-                                    timer: 1500,
-                                    showConfirmButton: false
-                                });
-                            }
-                        },
-                        error: function () {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error',
-                                text: 'No se ha podido aprobar el pedido',
-                                timer: 1500,
-                                showConfirmButton: false
-                            });
-                        }
-                    });
-                }
-            });
-        }
-
-        function reject(id) {
-            Swal.fire({
-                title: "¿Está seguro que desea rechazar este pedido?",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonText: 'Aceptar',
-                cancelButtonText: 'Cancelar',
-                reverseButtons: true,
-                customClass: {
-                    confirmButton: 'btn btn-success',
-                    cancelButton: 'btn btn-danger mr-2'
-                },
-                buttonsStyling: false,
-                allowOutsideClick: false
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: '@Url.Action("Reject")?id=' + id,
-                        type: 'POST',
-                        success: function (result) {
-                            if (result) {
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Éxito',
-                                    text: 'Se ha rechazado correctamente el pedido',
-                                    timer: 1500,
-                                    showConfirmButton: false
-                                });
-                                $('#Grid').DataTable().draw();
-                            } else {
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Error',
-                                    text: 'No se ha podido rechazar el pedido',
-                                    timer: 1500,
-                                    showConfirmButton: false
-                                });
-                            }
-                        },
-                        error: function () {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error',
-                                text: 'No se ha podido rechazar el pedido',
-                                timer: 1500,
-                                showConfirmButton: false
-                            });
-                        }
-                    });
-                }
-            });
-        }
     </script>
 }

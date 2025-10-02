@@ -24,9 +24,6 @@
     <div class="logo">
         @* <a href="@Url.Action("Index", "Home")"><img src="~/images/logo.png" alt="logo" /></a> *@
     </div>
-    <ul class="navlinks">
-        <li><a href="@Url.Action("Index", "Home")" class="h5"><i class="fa-solid fa-house"></i> Inicio</a></li>
-    </ul>
     <div class="cart-profile">
         @if (User.Identity.IsAuthenticated)
         {
@@ -54,7 +51,14 @@
 {
     <nav class="nav cart-nav">
         <ul class="navlinks">
-            <li><a href="@Url.Action("Index", "Order")" class="h5"><i class="fa-solid fa-cart-shopping"></i> Ventas</a></li>
+            @if (roleId != (short)eRole.StockManager)
+            {
+                <li><a href="@Url.Action("Index", "Order")" class="h5"><i class="fa-solid fa-cart-shopping"></i> Ventas</a></li>
+            }
+            @if (roleId != (short)eRole.Purchasing)
+            {
+                <li><a href="@Url.Action("Index", "DepositMovement")" class="h5"><i class="fa-solid fa-right-left"></i> Movimientos</a></li>
+            }
             @if (roleId == (short)eRole.Administrator)
             {
                 <li style="position: relative; padding: 0; padding-top: 2px">
@@ -76,7 +80,14 @@
         <li><a href="@Url.Action("Index", "Home")"><i class="fa-solid fa-house"></i> Inicio</a></li>
         @if (User.Identity.IsAuthenticated)
         {
-            <li><a href="@Url.Action("Index", "Order")" class="h5"><i class="fa-solid fa-cart-shopping"></i> Ventas</a></li>
+            @if (roleId != (short)eRole.StockManager)
+            {
+                <li><a href="@Url.Action("Index", "Order")" class="h5"><i class="fa-solid fa-cart-shopping"></i> Ventas</a></li>
+            }
+            @if (roleId != (short)eRole.Purchasing)
+            {
+                <li><a href="@Url.Action("Index", "DepositMovement")" class="h5"><i class="fa-solid fa-right-left"></i> Movimientos</a></li>
+            }
             @if (roleId == (short)eRole.Administrator)
             {
                 <li style="position: relative; padding: 0; padding-top: 2px">

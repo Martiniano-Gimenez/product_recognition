@@ -4,6 +4,7 @@ namespace Service.ServiceContracts
 {
     public interface IDepositMovementService
     {
+        Task<List<KeyValueData>> GetAllDepositsSelectable();
         Task<GridData<DepositMovementGridData>> GetAllPaginated(DTParameters param, long userId, short roleId);
         Task<DepositMovementData> GetById(long id);
         Task<DepositMovementViewData> GetByIdForView(long id);

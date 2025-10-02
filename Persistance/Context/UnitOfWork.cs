@@ -17,6 +17,7 @@ namespace Persistance.Context
         public IProductImageRepository ProductImageRepository { get; set; }
         public ICategoryRepository CategoryRepository { get; set; }
         public IDepositMovementRepository DepositMovementRepository { get; set; }
+        public IDepositRepository DepositRepository { get; set; }
 
         public UnitOfWork(ShoppingCartContext context,
                          IHttpContextAccessor httpContextAccessor, 
@@ -26,7 +27,8 @@ namespace Persistance.Context
                          IClientRepository clientRepository,
                          IProductImageRepository salesFileRepository,
                          ICategoryRepository categoryRepository,
-                         IDepositMovementRepository depositMovementRepository)
+                         IDepositMovementRepository depositMovementRepository,
+                         IDepositRepository depositRepository)
         {
             _context = context;
             _httpContextAccessor = httpContextAccessor;
@@ -37,6 +39,7 @@ namespace Persistance.Context
             ProductImageRepository = salesFileRepository;
             CategoryRepository = categoryRepository;
             DepositMovementRepository = depositMovementRepository;
+            DepositRepository = depositRepository;
         }
 
         public async Task<bool> SaveChangesAsync()

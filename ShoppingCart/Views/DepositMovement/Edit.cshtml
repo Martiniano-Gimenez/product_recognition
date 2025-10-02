@@ -1,7 +1,7 @@
 ﻿@using Model.Domain
 @using Service.Data
 @using ShoppingCart.Helpers
-@model Service.Data.OrderData
+@model Service.Data.DepositMovementData
 
 
 @{
@@ -21,14 +21,18 @@
     @Html.AntiForgeryToken()
     <div class="row">
         <div class="col-md-12">
-            <h4 class="page-title text-center">MODIFICAR VENTA</h4>
+            <h4 class="page-title text-center">MODIFICAR MOVIMIENTO</h4>
             @Html.HiddenFor(model => model.Id)
         </div>
     </div>
     <div class="row">
-        <div class="form-group col-md-8">
-            @Html.LabelFor(model => model.ClientId)
-            @Html.DropDownListFor(model => model.ClientId, new SelectList(ViewBag.Clients, "Key", "Value"), "Seleccione un cliente", new { @class = "form-control" })
+        <div class="form-group col-md-4">
+            @Html.LabelFor(model => model.OriginDepositId)
+            @Html.DropDownListFor(model => model.OriginDepositId, new SelectList(ViewBag.Deposits, "Key", "Value"), "Seleccione un depósito", new { @class = "form-control" })
+        </div>
+        <div class="form-group col-md-4">
+            @Html.LabelFor(model => model.DestinationDepositId)
+            @Html.DropDownListFor(model => model.DestinationDepositId, new SelectList(ViewBag.Deposits, "Key", "Value"), "Seleccione un depósito", new { @class = "form-control" })
         </div>
         <div class="form-group col-md-4">
             @Html.LabelFor(model => model.Date)
@@ -121,8 +125,15 @@
 
 
         $(document).ready(function () {
-            $('#ClientId').select2({
-                placeholder: 'Seleccione un cliente',
+            $('#OriginDepositId').select2({
+                placeholder: 'Seleccione un depósito',
+                allowClear: true,
+                language: 'es',
+                width: "100%"
+            });
+
+            $('#DestinationDepositId').select2({
+                placeholder: 'Seleccione un depósito',
                 allowClear: true,
                 language: 'es',
                 width: "100%"
@@ -135,9 +146,9 @@
                 placeholder: "Seleccione un artículo",
                 multiple: false,
                 minimumInputLength: 2,
-                delay: 50, 
+                delay: 50,
                 ajax: {
-                    url: "@Url.Action("GetProductsByTerm")", 
+                    url: "@Url.Action("GetProductsByTerm")",
                     dataType: 'json',
                     type: "GET",
                     data: function(params) {
@@ -149,8 +160,8 @@
                         return {
                             results: $.map(data, function(item) {
                                 return {
-                                    id: item.Key,  
-                                    text: item.Value 
+                                    id: item.Key,
+                                    text: item.Value
                                 };
                             })
                         };
@@ -172,7 +183,7 @@
 
             var data = $('form').serialize();
             $.ajax({
-                url: '@Url.Action("AddProductToOrder")',
+                url: '@Url.Action("AddProductToDepositMovement")',
                 type: 'POST',
                 data: data,
                 success: function (data) {
@@ -202,10 +213,10 @@
             });
         }
 
-        function updateOrder() {
+        function updateDepositMovement() {
             var data = $('form').serialize();
             $.ajax({
-                url: '@Url.Action("UpdateOrder")',
+                url: '@Url.Action("UpdateDepositMovement")',
                 type: 'POST',
                 data: data,
                 success: function (data) {
@@ -217,7 +228,7 @@
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
-                        text: 'No se ha podido actualizar el pedido',
+                        text: 'No se ha podido actualizar el movimiento',
                         timer: 1500,
                         showConfirmButton: false
                     });
@@ -234,8 +245,8 @@
                 cancelButtonText: 'Cancelar',
                 reverseButtons: true,
                 customClass: {
-                    confirmButton: 'btn btn-success', 
-                    cancelButton: 'btn btn-danger mr-2'    
+                    confirmButton: 'btn btn-success',
+                    cancelButton: 'btn btn-danger mr-2'
                 },
                 buttonsStyling: false,
                 allowOutsideClick: false
@@ -267,7 +278,7 @@
 
         function edit() {
             Swal.fire({
-                title: "¿Está seguro desea actualizar el pedido?",
+                title: "¿Está seguro desea actualizar el movimiento?",
                 icon: "warning",
                 showCancelButton: true,
                 confirmButtonText: 'Aceptar',

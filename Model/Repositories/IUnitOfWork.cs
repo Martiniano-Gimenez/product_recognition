@@ -9,6 +9,7 @@
         IProductImageRepository ProductImageRepository { get; set; }
         ICategoryRepository CategoryRepository { get; set; }
         IDepositMovementRepository DepositMovementRepository { get; set; }
+        IDepositRepository DepositRepository { get; set; }
 
         Task<bool> SaveChangesAsync();
         Task BeginTransactionAsync();

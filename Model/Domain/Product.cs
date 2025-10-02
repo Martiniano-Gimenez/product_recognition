@@ -26,9 +26,6 @@ namespace Model.Domain
         public virtual List<ProductImage> ProductImages { get; set; } = new List<ProductImage>();
 
         [Projectable]
-        public string CodeAndNameAndDescription => $"{Code} - {Name} - {ShortDescription}";
-
-        [Projectable]
-        public string ShortDescription => Description.Length > 50 ? Description.Substring(0, 50) : Description;
+        public string CodeAndNameAndDescription => $"{Code} - {Name} - {SalePrice:$#,##0.00}";
     }
 }
