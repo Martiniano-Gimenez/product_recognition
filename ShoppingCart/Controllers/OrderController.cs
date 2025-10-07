@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Model.Domain;
 using Service;
 using Service.Data;
@@ -14,14 +15,17 @@ namespace ShoppingCart.Controllers
         private readonly IOrderService _orderService;
         private readonly IProductService _productService;
         private readonly IClientService _clientService;
+        private readonly IProductDetectorService _productDetectorService;
 
         public OrderController(IOrderService orderService, 
                                IProductService productService,
-                               IClientService clientService)
+                               IClientService clientService,
+                               IProductDetectorService productDetectorService)
         {
             _orderService = orderService;
             _productService = productService;
             _clientService = clientService;
+            _productDetectorService = productDetectorService;
         }
 
         public IActionResult Index()
@@ -137,6 +141,18 @@ namespace ShoppingCart.Controllers
                 ShowErrorMessage(ex.Message);
                 return RedirectToAction("Index");
             }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DetectProducts(OrderData data)
+        {
+            if (data.Image == null || data.Image.Length == 0)
+                return BadRequest("No se subió ninguna imagen");
+
+            using var stream = data.Image.OpenReadStream();
+            var detections = _productDetectorService.DetectProductsFromStream(stream);
+
+            return PartialView("_edit", await _orderService.AddProductsToOrder(data, detections.Select(d => d.ProductId).ToList()));
         }
     }
 }

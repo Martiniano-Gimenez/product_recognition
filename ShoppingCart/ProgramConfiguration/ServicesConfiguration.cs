@@ -41,6 +41,7 @@ namespace ShoppingCart.ProgramConfiguration
             services.AddTransient<IProductImageService, ProductImageService>();
             services.AddTransient<ICategoryService, CategoryService>();
             services.AddTransient<IDepositMovementService, DepositMovementService>();
+            services.AddTransient<IProductDetectorService, ProductDetectorService>();
             #endregion
         }
     }

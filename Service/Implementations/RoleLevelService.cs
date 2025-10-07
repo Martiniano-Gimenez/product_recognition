@@ -433,6 +433,16 @@ namespace Service.Implementations
                     eRole.Purchasing
                 }
             });
+            ActionRoleLevels.Add(new ActionRoleData
+            {
+                Controller = "Order",
+                Action = "DetectProducts",
+                Roles = new List<eRole>
+                {
+                    eRole.Administrator,
+                    eRole.Purchasing
+                }
+            });
             #endregion
             #region ClientController
             ActionRoleLevels.Add(new ActionRoleData

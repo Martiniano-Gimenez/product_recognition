@@ -65,6 +65,27 @@ namespace Service.Implementations
             return data;
         }
 
+        public async Task<OrderData> AddProductsToOrder(OrderData data, List<long> productIds)
+        {
+            if (!productIds.Any())
+                return data;
+
+            foreach(var productId in productIds)
+            {
+                if (data.Products.Any(p => p.ProductId == productId))
+                    data.Products.First(p => p.ProductId == productId).Quantity += 1;
+                else
+                {
+                    var product = await _unitOfWork.ProductRepository.GetByCondition(p => p.Id == productId, true)
+                        .Select(ProductMappingExtensions.MapToOrderDetailData(1)).FirstOrDefaultAsync();
+                    if (product is not null)
+                        data.Products.Add(product);
+                }
+            };
+
+            return data;
+        }
+
         public async Task<bool> Create(OrderData data, long userId)
         {
             var canCreateOrder = await _unitOfWork.UserRepository.GetByCondition(u => u.Id == userId, true)
