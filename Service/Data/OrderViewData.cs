@@ -31,7 +31,11 @@ namespace Service.Data
 
         public List<OrderDetailViewData> Products { get; set; } = new List<OrderDetailViewData>();
 
-        public string DisplayTotal => Total.AsMoneyString();
+        public decimal Net => Products.Sum(p => p.Net);
+        public decimal Iva => Products.Sum(p => p.Iva);
+        public string NetDisplay => Net.AsMoneyString();
+        public string IvaDisplay => Iva.AsMoneyString();
+        public string TotalDisplay => Total.AsMoneyString();
         public string StateDescription => OrderState.GetAttribute<DescriptionAttribute>().Description;
         public string StateClass => OrderState.GetAttribute<ClassesAtributte>().Classes;
     }

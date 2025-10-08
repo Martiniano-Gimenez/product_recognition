@@ -29,7 +29,7 @@ namespace ShoppingCart.Controllers
 
         public IActionResult Create()
         {
-            return View();
+            return View(new ProductData());
         }
 
         [HttpPost]

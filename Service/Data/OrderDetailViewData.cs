@@ -9,8 +9,13 @@ namespace Service.Data
         public string Name { get; set; }
         public decimal UnitPrice { get; set; }
         public int Quantity { get; set; }
-        public decimal Total {  get; set; } 
+        public decimal IvaPercentage { get; set; }
 
+
+        public decimal Net => UnitPrice * Quantity;
+        public decimal Iva => UnitPrice * (IvaPercentage / 100) * Quantity;
+        public decimal Total => Net + Iva;
+        public string DisplayTotal => Total.AsMoneyString();
         public string UnitPriceDisplay => UnitPrice.AsMoneyString();
         public string TotalDisplay => Total.AsMoneyString();
     }

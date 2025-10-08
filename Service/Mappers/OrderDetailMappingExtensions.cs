@@ -29,7 +29,7 @@ namespace Service.Mappers
                 Name = entity.Product.Name,
                 UnitPrice = entity.UnitPrice,
                 Quantity = entity.Quantity,
-                Total = entity.Total
+                IvaPercentage = entity.IvaPercentage,
             };
         }
 
@@ -52,7 +52,7 @@ namespace Service.Mappers
             else
             {
                 entity.Quantity = data.Quantity;
-                entity.UnitPrice = entity.Product.SalePrice;
+                entity.UnitPrice = data.UnitPrice;
                 entity.Total = data.Quantity * entity.UnitPrice;
                 entity.IvaPercentage = data.IvaPercentage;
             }

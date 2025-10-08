@@ -15,16 +15,6 @@ namespace Service.Implementations
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<GridData<OrderGridData>> GetAllPaginatedForShoppingCart(DTParameters param, long userId)
-        {
-            var orders = _unitOfWork.OrderRepository
-                .GetFilteredByPageForShoppingCart(param.SearchValue, param.OrderBy, param.SortDirection(DTOrderDir.DESC), userId)
-                .Select(OrderMappingExtensions.MapForGridData());
-
-            var ordersPaginated = await _unitOfWork.OrderRepository.GetPagedListAsync(orders, param.Start, param.Length);
-            return ordersPaginated.MapToPagGridData();
-        }
-
         public async Task<GridData<OrderGridData>> GetAllPaginated(DTParameters param, long userId, short roleId)
         {
             var orders = _unitOfWork.OrderRepository
@@ -86,6 +76,16 @@ namespace Service.Implementations
             return data;
         }
 
+        public async Task<OrderData> UpdateOrder(OrderData data)
+        {
+            foreach(var productData in data.Products)
+            {
+                var product = await _unitOfWork.ProductRepository.GetByCondition(p => p.Id == productData.ProductId, true).FirstOrDefaultAsync();
+                productData.UnitPrice = product.PriceByQuantity(productData.Quantity);
+            }
+            return data;
+        }
+
         public async Task<bool> Create(OrderData data, long userId)
         {
             var canCreateOrder = await _unitOfWork.UserRepository.GetByCondition(u => u.Id == userId, true)
@@ -96,6 +96,9 @@ namespace Service.Implementations
 
             if (!data.Products.Any())
                 throw new BusinessException("El pedido debe tener al menos un artículo");
+
+            if (!data.ClientId.HasValue)
+                throw new BusinessException("No seleccionó cliente");
 
             var order = data.MapToEntity();
 
@@ -114,6 +117,9 @@ namespace Service.Implementations
 
             if (!data.Products.Any())
                 throw new BusinessException("El pedido debe tener al menos un artículo");
+
+            if (!data.ClientId.HasValue)
+                throw new BusinessException("No seleccionó cliente");
 
             var order = await _unitOfWork.OrderRepository.GetByCondition(o => o.Id == data.Id, false, i => i.Include(o => o.OrderDetails.Where(od => od.IsActive)).ThenInclude(od => od.Product)).FirstOrDefaultAsync()
                 ?? throw new BusinessException("El pedido no existe");

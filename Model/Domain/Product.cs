@@ -24,8 +24,12 @@ namespace Model.Domain
         public virtual Category Category { get; set; }
 
         public virtual List<ProductImage> ProductImages { get; set; } = new List<ProductImage>();
+        public virtual List<ProductOffer> ProductOffers { get; set; } = new List<ProductOffer>();
 
         [Projectable]
         public string CodeAndNameAndDescription => $"{Code} - {Name} - {SalePrice:$#,##0.00}";
+
+        [Projectable]
+        public decimal PriceByQuantity(int quantity) => !ProductOffers.Any(po => po.IsActive && po.Units == quantity) ? SalePrice : ProductOffers.First(po => po.IsActive && po.Units == quantity).UnitPrice;
     }
 }

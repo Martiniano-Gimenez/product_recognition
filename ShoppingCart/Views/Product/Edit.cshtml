@@ -52,6 +52,24 @@
             @Html.TextAreaFor(Model => Model.Description, new { @class = "form-control w-100", @style = "resize: none" })
         </div>
     </div>
+    <div class="row mt-2">
+        <div class="form-group col-md-3">
+            @Html.LabelFor(model => model.AddOfferUnits)
+            @Html.EditorFor(Model => Model.AddOfferUnits, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+        <div class="form-group col-md-3">
+            @Html.LabelFor(model => model.AddOfferUnitPrice)
+            @Html.EditorFor(Model => Model.AddOfferUnitPrice, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+        <div class="form-group col-md-3 mt-md-3">
+            <button onclick="addOffer()" type="button" class="btn btn-primary mt-md-3">Agregar oferta <i class="fa-solid fa-plus"></i></button>
+        </div>
+    </div>
+    <div class="row mt-1" style="overflow: auto">
+        <div class="form-group col-md-12" id="offersContainer">
+            @await Html.PartialAsync("_offers", Model)
+        </div>
+    </div>
     <div class="row">
         <div class="form-group col-md-12 text-right mb-3">
             <a href="@Url.Action("Index")" class="btn btn-secondary">Volver</a>

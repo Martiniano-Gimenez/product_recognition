@@ -119,7 +119,7 @@ namespace ShoppingCart.Controllers
         public async Task<IActionResult> UpdateOrder(OrderData data)
         {
             ModelState.Clear();
-            return PartialView("_edit", data);
+            return PartialView("_edit", await _orderService.UpdateOrder(data));
         }
 
         [HttpPost]

@@ -80,7 +80,13 @@ namespace Service.Mappers
                 Name = entity.Name,
                 SalePrice = entity.SalePrice,
                 IvaPercentage = entity.IvaPercentage,   
-                Description = entity.Description
+                Description = entity.Description,
+                ProductOffers = entity.ProductOffers.Where(po => po.IsActive).OrderByDescending(po => po.Units).Select(po => new ProductOfferData
+                {
+                    Id = po.Id,
+                    Units = po.Units,
+                    UnitPrice = po.UnitPrice,
+                }).ToList()
             };
         }
 
@@ -100,7 +106,7 @@ namespace Service.Mappers
                 ProductId = entity.Id,
                 Code = entity.Code,
                 Name = entity.Name,
-                UnitPrice = entity.SalePrice,
+                UnitPrice = entity.PriceByQuantity(quantity),
                 Quantity = quantity,
                 IvaPercentage = entity.IvaPercentage
             };
@@ -114,16 +120,6 @@ namespace Service.Mappers
                 Code = entity.Code,
                 Name = entity.Name,
                 Quantity = quantity,
-            };
-        }
-
-        public static Expression<Func<Product, Product>> MapWithSalePriceAndProductOffers()
-        {
-            return entity => new Product
-            {
-                Id = entity.Id,
-                SalePrice = entity.SalePrice,
-                IvaPercentage = entity.IvaPercentage,
             };
         }
 
@@ -147,6 +143,13 @@ namespace Service.Mappers
             entity.Description = data.Description;
             entity.IvaPercentage = data.IvaPercentage;
 
+            entity.ProductOffers.Where(po => po.IsActive).ToList()
+                .ForEach(offerEntity => offerEntity.IsActive = data.ProductOffers.Any(po => po.Id == offerEntity.Id));
+
+            var newOffers = data.ProductOffers.Where(po => !po.Id.HasValue).Select(po => po.MapToEntity()).ToList();
+            entity.ProductOffers.AddRange(newOffers);
+
+
             return entity;
         }
 
@@ -158,7 +161,12 @@ namespace Service.Mappers
                 Name = entity.Name,
                 SalePrice = entity.SalePrice,
                 IvaPercentage = entity.IvaPercentage,
-                Description = entity.Description
+                Description = entity.Description,
+                ProductOffers = entity.ProductOffers.Where(po => po.IsActive).OrderByDescending(po => po.Units).Select(po => new ProductOfferViewData
+                {
+                    Units = po.Units,
+                    UnitPrice = po.UnitPrice,
+                }).ToList()
             };
         }
     }
