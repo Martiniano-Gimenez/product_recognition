@@ -14,14 +14,17 @@ namespace ShoppingCart.Controllers
         private readonly IDepositMovementService _depositmovementService;
         private readonly IProductService _productService;
         private readonly IClientService _clientService;
+        private readonly IProductDetectorService _productDetectorService;
 
         public DepositMovementController(IDepositMovementService depositmovementService, 
                                IProductService productService,
-                               IClientService clientService)
+                               IClientService clientService,
+                               IProductDetectorService productDetectorService)
         {
             _depositmovementService = depositmovementService;
             _productService = productService;
             _clientService = clientService;
+            _productDetectorService = productDetectorService;
         }
 
         public IActionResult Index()
@@ -137,6 +140,23 @@ namespace ShoppingCart.Controllers
                 ShowErrorMessage(ex.Message);
                 return RedirectToAction("Index");
             }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DetectProducts(DepositMovementData data)
+        {
+            ModelState.Clear();
+
+            if (data.Image == null || data.Image.Length == 0)
+                return BadRequest("No se subió ninguna imagen");
+
+            using var stream = data.Image.OpenReadStream();
+            var detections = _productDetectorService.DetectProductsFromStream(stream);
+
+            if (!detections.Any())
+                return BadRequest("No se detecto ningún producto existente");
+
+            return PartialView("_edit", await _depositmovementService.AddProductsToMovement(data, detections.Select(d => d.ProductId).ToList()));
         }
     }
 }

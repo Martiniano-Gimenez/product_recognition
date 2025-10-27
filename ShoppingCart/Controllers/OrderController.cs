@@ -146,11 +146,16 @@ namespace ShoppingCart.Controllers
         [HttpPost]
         public async Task<IActionResult> DetectProducts(OrderData data)
         {
+            ModelState.Clear();
+
             if (data.Image == null || data.Image.Length == 0)
                 return BadRequest("No se subió ninguna imagen");
 
             using var stream = data.Image.OpenReadStream();
             var detections = _productDetectorService.DetectProductsFromStream(stream);
+
+            if (!detections.Any())
+                return BadRequest("No se detecto ningún producto existente");
 
             return PartialView("_edit", await _orderService.AddProductsToOrder(data, detections.Select(d => d.ProductId).ToList()));
         }

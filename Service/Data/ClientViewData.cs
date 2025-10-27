@@ -10,9 +10,6 @@ namespace Service.Data
         [Display(Name = "CUIT/CUIL")]
         public string? CUIL { get; set; }
 
-        [Display(Name = "Vendedor")]
-        public string? Seller { get; set; }
-
         [Display(Name = "Email")]
         public string? Email { get; set; }
 

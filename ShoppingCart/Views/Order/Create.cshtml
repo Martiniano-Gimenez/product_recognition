@@ -164,7 +164,7 @@
                     var container = $("#productsContainer");
                     container.empty();
                     container.html(html);
-
+                    removeImage();
                     Swal.fire({
                         icon: 'success',
                         title: 'Productos detectados',
@@ -174,6 +174,7 @@
                     });
                 },
                 error: function (xhr) {
+                    removeImage();
                     Swal.close();
                     Swal.fire({
                         icon: 'error',
@@ -183,6 +184,15 @@
                     });
                 }
             });
+        }
+
+        function removeImage() {
+            const fileInput = document.getElementById('fileInput');
+            const image = document.getElementById('imagePreview');
+
+            fileInput.value = '';           // Limpia el input file
+            image.src = '#';                // Limpia la imagen
+            image.style.display = 'none';   // Oculta la vista previa
         }
 
 

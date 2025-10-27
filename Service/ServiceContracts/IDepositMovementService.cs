@@ -11,5 +11,6 @@ namespace Service.ServiceContracts
         Task<DepositMovementData> AddProductToDepositMovement(DepositMovementData data);
         Task<bool> Create(DepositMovementData data, long userId);
         Task<bool> Edit(DepositMovementData data, long userId);
+        Task<DepositMovementData> AddProductsToMovement(DepositMovementData data, List<long> productIds);
     }
 }

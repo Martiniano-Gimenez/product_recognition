@@ -114,7 +114,7 @@
                         "targets": [-1],
                         "orderable": false,
                         "createdCell": function (td, cellData, rowData, row, col) {
-                            var img = "<a class='btn btn-sm btn-primary mb-1 mr-1' href='@Url.Action("Index", "ProductImage")?productId=" + rowData.Id + "'> Imagenes</button > ";
+                            var img = "<a class='btn btn-sm btn-primary mb-1 mr-1' href='@Url.Action("Index", "ProductImage")?productId=" + rowData.Id + "'> Imágenes</button > ";
                             var edit = "<a class='btn btn-sm btn-warning mb-1 mr-1' title='Modificar artículo' href='@Url.Action("Edit")?id=" + rowData.Id + "'> Modificar</button > ";
                             var detail = "<a class='btn btn-sm btn-info mb-1 mr-1' title='Ver detalle' href='@Url.Action("Detail")?id=" + rowData.Id + "'> Detalle</button > ";
                             var del = "<button type='button' class='btn btn-sm btn-danger mb-1 mr-1' title='Eliminar archivo' onclick='deleteElement(" + rowData.Id + ")'> Eliminar</button>";

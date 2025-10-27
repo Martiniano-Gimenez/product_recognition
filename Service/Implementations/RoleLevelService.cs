@@ -760,6 +760,16 @@ namespace Service.Implementations
                     eRole.StockManager
                 }
             });
+            ActionRoleLevels.Add(new ActionRoleData
+            {
+                Controller = "DepositMovement",
+                Action = "DetectProducts",
+                Roles = new List<eRole>
+                {
+                    eRole.Administrator,
+                    eRole.StockManager
+                }
+            });
             #endregion
         }
     }

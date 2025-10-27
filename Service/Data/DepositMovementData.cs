@@ -1,4 +1,5 @@
-﻿using Model.Utils;
+﻿using Microsoft.AspNetCore.Http;
+using Model.Utils;
 using System.ComponentModel.DataAnnotations;
 
 namespace Service.Data
@@ -24,6 +25,8 @@ namespace Service.Data
 
         [Display(Name = "Cantidad")]
         public int? NewProductQuantity { get; set; }
+
+        public IFormFile? Image { get; set; }
 
         public List<DepositMovementDetailData> Products { get; set; } = new List<DepositMovementDetailData>();
     }

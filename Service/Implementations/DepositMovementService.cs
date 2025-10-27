@@ -106,5 +106,27 @@ namespace Service.Implementations
 
             return await _unitOfWork.SaveChangesAsync();
         }
+
+        public async Task<DepositMovementData> AddProductsToMovement(DepositMovementData data, List<long> productIds)
+        {
+            if (!productIds.Any())
+                return data;
+
+            foreach (var productId in productIds)
+            {
+                if (data.Products.Any(p => p.ProductId == productId))
+                    data.Products.First(p => p.ProductId == productId).Quantity += 1;
+                else
+                {
+                    var product = await _unitOfWork.ProductRepository.GetByCondition(p => p.Id == productId, true)
+                        .Select(ProductMappingExtensions.MapToDepositMovementDetailData(1)).FirstOrDefaultAsync();
+                    if (product is not null)
+                        data.Products.Add(product);
+                }
+            }
+            ;
+
+            return data;
+        }
     }
 }

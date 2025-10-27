@@ -41,12 +41,23 @@
     </div>
     <div class="row">
         <div class="form-group col-md-4 offset-md-4 text-center">
-            <input type="file" id="fileInput" accept="image/*" onchange="previewImage(event)" class="form-control mb-2" />
+            <input type="file" name="Image" id="fileInput" accept="image/*" onchange="previewImage(event)" class="form-control mb-2" />
 
             <img id="imagePreview"
                  src="#"
                  alt="Previsualización"
-                 style="display: none; width: 150px; height: 150px; object-fit: cover; border: 1px solid #ccc; margin-top: 10px; border: 8px;" />
+                 style="display: none; width: 350px; height: 350px; object-fit: cover; border: 1px solid #ccc; margin-top: 10px; border-radius: 8px;" />
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="form-group col-md-12 text-center">
+            <button type="button"
+                    id="btnDetectProducts"
+                    class="btn btn-info btn-sm"
+                    onclick="detectProductsFromOrder()"
+                    style="font-size: 1rem; font-weight: bold;">
+                <i class="fa-solid fa-eye"></i> Reconocer productos en imagen
+            </button>
         </div>
     </div>
     <div class="row">
@@ -120,6 +131,72 @@
             preview.src = '#';
             preview.style.display = 'none';
           }
+        }
+
+        function detectProductsFromOrder() {
+            const input = document.getElementById("fileInput");
+            const preview = document.getElementById("imagePreview");
+
+            if (!input.files || input.files.length === 0) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Sin imagen',
+                    text: 'Debe seleccionar una imagen antes de detectar productos.',
+                    confirmButtonText: 'Aceptar'
+                });
+                return;
+            }
+
+            const form = $('form')[0];
+            const formData = new FormData(form);
+
+            Swal.fire({
+                title: 'Procesando imagen...',
+                text: 'Esto puede tardar unos segundos.',
+                allowOutsideClick: false,
+                didOpen: () => Swal.showLoading()
+            });
+
+            $.ajax({
+                url: '@Url.Action("DetectProducts")',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (html) {
+                    Swal.close();
+                    var container = $("#productsContainer");
+                    container.empty();
+                    container.html(html);
+                    removeImage();
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Productos detectados',
+                        text: 'Se agregaron automáticamente al pedido.',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                },
+                error: function (xhr) {
+                    removeImage();
+                    Swal.close();
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error al detectar',
+                        text: xhr.responseText || 'No se pudo procesar la imagen.',
+                        confirmButtonText: 'Aceptar'
+                    });
+                }
+            });
+        }
+
+        function removeImage() {
+            const fileInput = document.getElementById('fileInput');
+            const image = document.getElementById('imagePreview');
+
+            fileInput.value = '';           // Limpia el input file
+            image.src = '#';                // Limpia la imagen
+            image.style.display = 'none';   // Oculta la vista previa
         }
 
 

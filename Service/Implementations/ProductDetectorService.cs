@@ -78,7 +78,7 @@ public class ProductDetectorService : IProductDetectorService
             if (!isRedDominant && colorDiff > 70)
                 isMatch = false;
 
-            if (isMatch)
+            if (isMatch && !detections.Any(d => d.ProductId == productData.ProductId))
             {
                 detections.Add(new ProductDetectionResult
                 {
