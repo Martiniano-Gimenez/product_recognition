@@ -94,7 +94,7 @@ namespace ShoppingCart.Controllers
         {
             ModelState.Clear();
             data.AddProductOffer();
-            return PartialView("_offers", data);
+            return PartialView("_Offers", data);
         }
 
         public IActionResult DeleteOffer(ProductData data, int removeIndex)
@@ -102,7 +102,7 @@ namespace ShoppingCart.Controllers
             ModelState.Clear();
             data.ProductOffers.RemoveAt(removeIndex);
             data.ProductOffers = data.ProductOffers.OrderByDescending(po => po.Units).ToList();
-            return PartialView("_offers", data);
+            return PartialView("_Offers", data);
         }
 
         public async Task<IActionResult> Detail(long id)

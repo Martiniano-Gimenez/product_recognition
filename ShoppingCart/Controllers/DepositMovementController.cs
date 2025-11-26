@@ -111,14 +111,14 @@ namespace ShoppingCart.Controllers
         public async Task<IActionResult> AddProductToDepositMovement(DepositMovementData data)
         {
             ModelState.Clear();
-            return PartialView("_edit", await _depositmovementService.AddProductToDepositMovement(data));
+            return PartialView("_Edit", await _depositmovementService.AddProductToDepositMovement(data));
         }
 
         [HttpPost]
         public async Task<IActionResult> UpdateDepositMovement(DepositMovementData data)
         {
             ModelState.Clear();
-            return PartialView("_edit", data);
+            return PartialView("_Edit", data);
         }
 
         [HttpPost]
@@ -126,7 +126,7 @@ namespace ShoppingCart.Controllers
         {
             ModelState.Clear();
             data.Products = data.Products.Where(p => p.ProductId != productId).ToList();
-            return PartialView("_edit", data);
+            return PartialView("_Edit", data);
         }
 
         public async Task<IActionResult> Detail(long id)
@@ -156,7 +156,7 @@ namespace ShoppingCart.Controllers
             if (!detections.Any())
                 return BadRequest("No se detecto ningún producto existente");
 
-            return PartialView("_edit", await _depositmovementService.AddProductsToMovement(data, detections.Select(d => d.ProductId).ToList()));
+            return PartialView("_Edit", await _depositmovementService.AddProductsToMovement(data, detections.Select(d => d.ProductId).ToList()));
         }
     }
 }

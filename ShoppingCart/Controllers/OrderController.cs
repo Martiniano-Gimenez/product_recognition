@@ -112,14 +112,14 @@ namespace ShoppingCart.Controllers
         public async Task<IActionResult> AddProductToOrder(OrderData data)
         {
             ModelState.Clear();
-            return PartialView("_edit", await _orderService.AddProductToOrder(data));
+            return PartialView("_Edit", await _orderService.AddProductToOrder(data));
         }
 
         [HttpPost]
         public async Task<IActionResult> UpdateOrder(OrderData data)
         {
             ModelState.Clear();
-            return PartialView("_edit", await _orderService.UpdateOrder(data));
+            return PartialView("_Edit", await _orderService.UpdateOrder(data));
         }
 
         [HttpPost]
@@ -127,7 +127,7 @@ namespace ShoppingCart.Controllers
         {
             ModelState.Clear();
             data.Products = data.Products.Where(p => p.ProductId != productId).ToList();
-            return PartialView("_edit", data);
+            return PartialView("_Edit", data);
         }
 
         public async Task<IActionResult> Detail(long id)
@@ -157,7 +157,7 @@ namespace ShoppingCart.Controllers
             if (!detections.Any())
                 return BadRequest("No se detecto ningún producto existente");
 
-            return PartialView("_edit", await _orderService.AddProductsToOrder(data, detections.Select(d => d.ProductId).ToList()));
+            return PartialView("_Edit", await _orderService.AddProductsToOrder(data, detections.Select(d => d.ProductId).ToList()));
         }
     }
 }
