@@ -1,0 +1,5 @@
+El presente informe describe el proceso de análisis, diseño y desarrollo del Sistema de Reconocimiento de Productos, realizado como trabajo integrador de la materia.
+El objetivo principal del proyecto es ofrecer una solución tecnológica que permita identificar productos automáticamente mediante una fotografía. Al reconocer los productos, el sistema debe completar el detalle del ticket incluyendo sus precios (los cuales pueden variar según la cantidad adquirida) y calcular el total de la compra.
+Además, el sistema debe registrar la salida de mercadería del depósito, administrar el stock distribuido en múltiples depósitos y generar transferencias internas tomando también una foto de los productos involucrados.
+Finalmente, el sistema debe analizar el historial de compras del cliente para enviarle, a través de WhatsApp, ofertas personalizadas relacionadas con los productos que compra habitualmente.
+Este informe documenta el trabajo realizado en cada sprint, la planificación, los artefactos generados, el modelo de datos, los estándares adoptados y el plan de calidad aplicado en el desarrollo.
